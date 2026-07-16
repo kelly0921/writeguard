@@ -25,6 +25,9 @@
     "demo:starter": "tsx apps/design-partner-starter/src/cli.ts",
     "demo:public": "node scripts/public-demo.mjs",
     "package:verify": "node scripts/verify-package.mjs",
+    "package:verify-openai-analyzer": "node scripts/verify-openai-analyzer-package.mjs",
+    "verify:core-openai-boundary": "node scripts/verify-core-openai-boundary.mjs",
+    "eval:openai-live": "pnpm --filter @closure/writeguard build && pnpm --filter @closure/writeguard-analyzer-openai build && node scripts/live-openai-analyzer-eval.mjs",
     "package:inspect": "node scripts/inspect-tarball.mjs",
     "writeguard:report": "node scripts/writeguard-report.mjs",
     "writeguard:doctor": "tsx apps/pilot-sandbox/src/cli.ts doctor",
@@ -44,10 +47,12 @@
     "validate:pilot-ready": "node scripts/validate-pilot-ready.mjs",
     "validate:pilot-ci": "node scripts/validate-pilot-ready.mjs --ci",
     "validate:build-week-iteration-1": "node scripts/validate-build-week-iteration-1.mjs",
+    "validate:build-week-iteration-2": "node scripts/validate-build-week-iteration-2.mjs",
     "inspect": "tsx apps/refund-demo/src/cli.ts inspect"
   },
   "devDependencies": {
     "@closure/writeguard": "workspace:*",
+    "@closure/writeguard-analyzer-openai": "workspace:*",
     "@writeguard/core": "workspace:*",
     "@writeguard/sdk": "workspace:*",
     "@writeguard/stripe-adapter": "workspace:*",

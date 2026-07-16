@@ -4,7 +4,7 @@
 
 Build Week work began on July 16, 2026. The submission period runs from July 13 through July 21, 2026 at 5:00 PM PT / 8:00 PM ET.
 
-The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week adds an unreleased, backward-compatible 0.4.0 working line.
+The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created an unreleased 0.4.0 Iteration 1 checkpoint and advances the additive working line to 0.5.0 for Iteration 2.
 
 On July 16, 2026, `npm view @closure/writeguard@0.3.0 --json` queried the configured public registry (`https://registry.npmjs.org/`) and returned `E404 Not Found`. Publication timestamp, registry integrity, shasum, and dist metadata were therefore unavailable and are not fabricated here. The artifact may be unpublished, private, differently scoped, or inaccessible without registry authorization; none of those possibilities is claimed as fact. Until independently verifiable registry metadata is supplied, documentation must call 0.3.0 a pre-Build Week local package baseline—not a verified public npm release.
 
@@ -44,13 +44,14 @@ Build Week must reduce integration distance while preserving deterministic enfor
 - Honest `writeguard normalize-mcp` CLI command.
 - External-consumer, provenance, redaction, versioning, serialization, analyzer-boundary, and CLI tests.
 
-### Iteration 2 — planned for July 17–18: GPT-5.6 analysis and review
+### Iteration 2 — July 16: GPT-5.6 analysis and review foundation
 
-- Optional model-backed analyzer outside the deterministic execution package.
-- Structured prompt/evaluation fixtures for refund, email, read-only, and sensitive-schema tools.
-- `writeguard analyze` only when an analyzer is explicitly configured.
-- Human-readable review artifact plus explicit developer approval transition.
-- No generation or runtime model dependency.
+- Optional `@closure/writeguard-analyzer-openai` package outside deterministic execution.
+- Official OpenAI JavaScript SDK and Responses API structured output fixed to `gpt-5.6`.
+- Trusted provenance/analyzer/approval envelope attachment plus runtime and post-response validation.
+- Deterministic fake-transport evaluation fixtures for normal, ambiguous, malformed, and adversarial cases.
+- Working `writeguard analyze` with JSON stdout and fail-closed nonzero exits.
+- Explicit credential-gated live evaluation; no generation or runtime model dependency.
 
 ### Iteration 3 — planned for July 19: guarded wrapper and failure-test generation
 
@@ -80,6 +81,16 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 - Added refund, email, read-only, invalid, and sensitive-field fixtures.
 - Added focused unit and external-consumer coverage.
 
+### 2026-07-16 — Iteration 2
+
+- Created the honest local Iteration 1 checkpoint at commit `9ecedf4` and annotated tag `build-week-iteration-1`; neither was pushed.
+- Advanced the unreleased core package to 0.5.0 and added the optional `@closure/writeguard-analyzer-openai@0.1.0` package.
+- Implemented GPT-5.6 Responses API structured analysis with `openai@6.47.0`, one bounded retry, a 60-second timeout, refusal/incomplete/error classification, and no model fallback.
+- Kept provenance, contract version, analyzer identity, recommendation status, and developer-approval state out of the model-facing schema and attached them in trusted code.
+- Added post-response checks for real input-field references, sensitive-field redaction, provider idempotency evidence, reconciliation evidence, and adapter claims.
+- Added `writeguard analyze`, twelve deterministic evaluation categories, live-evaluation tooling, clean external package verification, and a core dependency-graph gate.
+- Live GPT-5.6 evaluation remains pending because `OPENAI_API_KEY` was not configured; no live-model quality claim is made.
+
 ## Validation evidence
 
 ### Pre-edit baseline — passed July 16
@@ -90,13 +101,17 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 
 `pnpm validate:build-week-iteration-1` passed on July 16 in 194.3 seconds. Final unique automated coverage is 44 unit plus 20 live integration tests (64 total). The clean 0.4.0 consumer imported existing execution APIs and `@closure/writeguard/analysis`, typechecked declarations, ran the packaged CLI bin, and preserved the one-effect UNKNOWN/reconciliation proof. Tarball inspection found 78 expected files with explicit exports and public migrations only. Secret scan, advisory audit, SBOM, public demos, concurrency/crash proofs, both pilot modes, export redaction, doctor, cleanup, and refund/email/read-only CLI normalization all passed. See `docs/BUILD_WEEK_ITERATION_1_VALIDATION.md`.
 
+### Iteration 2 deterministic validation
+
+The deterministic suite now contains 72 unit tests, including 27 optional-analyzer tests, plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 92 total. The standard suite makes no OpenAI network calls. Both packages pack and install into a clean external consumer, declarations typecheck, the public injected transport runs without a key, the packaged CLI fails safely without a key, and the core production dependency graph contains no OpenAI SDK. Full command evidence is recorded in `docs/BUILD_WEEK_ITERATION_2_VALIDATION.md`. Live GPT-5.6 model-quality evaluation is a separate pending gate.
+
 ## Known limitations
 
-- No GPT-5.6 analyzer is implemented in Iteration 1.
+- GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; live model-quality evaluation is still pending.
 - Normalization accepts one MCP-style tool definition, not a full server manifest or live server connection.
 - Sensitive-field detection is a deterministic name/format heuristic and requires developer review.
 - Normalization preserves JSON Schema but does not fully evaluate every JSON Schema dialect or remote reference.
-- Risk analysis, guard generation, failure-test generation, verification, OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
+- Guard generation, failure-test generation, verification, OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
 - No external developer has yet measured the under-ten-minute journey.
-- The repository has no commit history, tags, package publication, or deployment evidence.
+- Local Build Week history begins at the Iteration 1 checkpoint; no commit or tag has been pushed, and no package has been published or deployed.
 - Existing execution guarantees still depend on correct application identity, reconciliation, verification, and durable storage.

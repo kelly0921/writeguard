@@ -1,0 +1,19 @@
+{
+  "name": "submit_external_job",
+  "description": "Submit a consequential job to an external provider. The schema contains no stable business-operation identifier.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "payload": { "type": "string", "description": "Job content" },
+      "priority": { "type": "string", "enum": ["normal", "urgent"] }
+    },
+    "required": ["payload"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+  }
+}

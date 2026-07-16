@@ -4,7 +4,9 @@
 
 | Surface | Validated baseline | Support statement |
 |---|---|---|
-| `@closure/writeguard` | 0.3.0 baseline; 0.4.0 unreleased | Pilot package plus additive Build Week analysis contract/CLI surface |
+| `@closure/writeguard` | 0.3.0 baseline; 0.4.0 checkpoint; 0.5.0 unreleased | Pilot package plus additive Build Week analysis contract and CLI surface |
+| `@closure/writeguard-analyzer-openai` | 0.1.0 unreleased | Node-only, design-time GPT-5.6 integration; deterministic fake transport validated, live model quality pending |
+| OpenAI JavaScript SDK | 6.47.0 | Optional analyzer package only; absent from the core production graph |
 | Node.js | 24.17.0 | Package declares Node >=20; other supported Node majors still require CI evidence |
 | Module system | ESM / NodeNext | CommonJS consumption is not currently validated |
 | PostgreSQL | 16.14 | Only PostgreSQL 16 is validated for the pilot ledger |

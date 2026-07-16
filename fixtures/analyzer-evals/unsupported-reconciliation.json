@@ -1,0 +1,20 @@
+{
+  "name": "charge_account",
+  "description": "Charge an external customer account once.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "accountId": { "type": "string" },
+      "amount": { "type": "integer", "minimum": 1 },
+      "currency": { "type": "string" }
+    },
+    "required": ["accountId", "amount", "currency"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+  }
+}

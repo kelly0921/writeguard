@@ -2,8 +2,10 @@ import { readFile } from "node:fs/promises";
 import {
   McpToolDefinitionError,
   normalizeMcpToolDefinition,
+  runToolRiskAnalyzer,
   serializeAnalysisArtifact
 } from "./analysis/index.js";
+import type { ToolRiskAnalyzer } from "./analysis/index.js";
 
 export type WriteGuardCliIo = {
   stdout(message: string): void;
@@ -29,11 +31,13 @@ const usage = [
   "Usage:",
   "  writeguard normalize-mcp <tool-definition.json|-> [--pretty]",
   "    [--server-name <name>] [--server-version <version>] [--source-label <label>]",
+  "  writeguard analyze <tool-definition.json|-> [--pretty]",
+  "    [--server-name <name>] [--server-version <version>] [--source-label <label>]",
   "",
-  "Iteration 1 normalizes and validates one MCP tool definition. It does not perform AI risk analysis."
+  "analyze requires @closure/writeguard-analyzer-openai and OPENAI_API_KEY; it uses gpt-5.6."
 ].join("\n");
 
-function parseOptions(args: string[]): {
+function parseOptions(command: "normalize-mcp" | "analyze", args: string[]): {
   path: string;
   pretty: boolean;
   serverName?: string;
@@ -57,10 +61,10 @@ function parseOptions(args: string[]): {
       continue;
     }
     if (argument.startsWith("--")) throw new Error(`unsupported option ${argument}`);
-    if (path) throw new Error("normalize-mcp accepts exactly one tool-definition path or - for stdin");
+    if (path) throw new Error(`${command} accepts exactly one tool-definition path or - for stdin`);
     path = argument;
   }
-  if (!path) throw new Error("normalize-mcp requires a tool-definition path or - for stdin");
+  if (!path) throw new Error(`${command} requires a tool-definition path or - for stdin`);
   return {
     path,
     pretty,
@@ -70,21 +74,57 @@ function parseOptions(args: string[]): {
   };
 }
 
+export type WriteGuardCliDependencies = {
+  loadAnalyzer(): Promise<ToolRiskAnalyzer>;
+};
+
+class OptionalAnalyzerPackageError extends Error {
+  constructor(message: string, options: { cause?: unknown } = {}) {
+    super(message, options.cause === undefined ? undefined : { cause: options.cause });
+    this.name = "OptionalAnalyzerPackageError";
+  }
+}
+
+async function loadOptionalOpenAIAnalyzer(): Promise<ToolRiskAnalyzer> {
+  const packageName = "@closure/writeguard-analyzer-openai";
+  let loaded: unknown;
+  try {
+    loaded = await import(packageName);
+  } catch (error) {
+    throw new OptionalAnalyzerPackageError(
+      `The analyze command requires the optional ${packageName} package. Install it alongside @closure/writeguard, then retry.`,
+      { cause: error }
+    );
+  }
+  const factory = (loaded as { createOpenAIToolRiskAnalyzer?: unknown }).createOpenAIToolRiskAnalyzer;
+  if (typeof factory !== "function") {
+    throw new OptionalAnalyzerPackageError(
+      `${packageName} is installed but does not expose createOpenAIToolRiskAnalyzer. Install a compatible package version.`
+    );
+  }
+  return (factory as () => ToolRiskAnalyzer)();
+}
+
+const defaultDependencies: WriteGuardCliDependencies = {
+  loadAnalyzer: loadOptionalOpenAIAnalyzer
+};
+
 export async function runWriteGuardCli(
   args: string[],
-  io: WriteGuardCliIo = defaultIo
+  io: WriteGuardCliIo = defaultIo,
+  dependencies: WriteGuardCliDependencies = defaultDependencies
 ): Promise<number> {
   const command = args[0];
   if (!command || command === "help" || command === "--help" || command === "-h") {
     io.stdout(`${usage}\n`);
     return 0;
   }
-  if (command !== "normalize-mcp") {
+  if (command !== "normalize-mcp" && command !== "analyze") {
     io.stderr(`writeguard: unsupported command ${command}\n\n${usage}\n`);
     return 2;
   }
   try {
-    const options = parseOptions(args.slice(1));
+    const options = parseOptions(command, args.slice(1));
     const content = options.path === "-" ? await io.readStdin() : await readFile(options.path, "utf8");
     let input: unknown;
     try {
@@ -97,11 +137,16 @@ export async function runWriteGuardCli(
       ...(options.serverVersion ? { serverVersion: options.serverVersion } : {}),
       ...(options.sourceLabel ? { sourceLabel: options.sourceLabel } : {})
     });
-    io.stdout(`${serializeAnalysisArtifact(normalized, { pretty: options.pretty })}\n`);
+    const artifact = command === "normalize-mcp"
+      ? normalized
+      : await runToolRiskAnalyzer(await dependencies.loadAnalyzer(), normalized);
+    io.stdout(`${serializeAnalysisArtifact(artifact, { pretty: options.pretty })}\n`);
     return 0;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     io.stderr(`writeguard: ${message}\n`);
-    return error instanceof McpToolDefinitionError ? 3 : 2;
+    if (error instanceof McpToolDefinitionError) return 3;
+    if (command === "analyze") return 4;
+    return 2;
   }
 }

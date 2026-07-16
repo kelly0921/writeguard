@@ -2,7 +2,7 @@
 
 WriteGuard gives agent-triggered external writes a stable business-operation identity, a durable PostgreSQL claim, explicit `UNKNOWN` handling, reconciliation, verification, and a terminal receipt.
 
-The unreleased 0.4.0 Build Week line also exposes deterministic MCP tool normalization and versioned design-time contracts through `@closure/writeguard/analysis`. AI analysis remains optional and outside the runtime execution path.
+The unreleased 0.5.0 Build Week line exposes deterministic MCP tool normalization and versioned design-time contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis lives in the separate optional `@closure/writeguard-analyzer-openai` package and remains outside the runtime execution path.
 
 ## Install
 
@@ -38,6 +38,16 @@ const normalized = normalizeMcpToolDefinition({
 ```
 
 The analysis subpath separates normalized source, recommendation-only analysis, and developer review. An analyzer implementation is injected through `ToolRiskAnalyzer`; the deterministic package includes no model implementation or API-key requirement.
+
+## Analyze with the optional GPT-5.6 package
+
+```bash
+writeguard analyze ./refund-order.json --pretty
+```
+
+The command dynamically loads `@closure/writeguard-analyzer-openai` and requires `OPENAI_API_KEY` in the process environment. It emits exactly one validated `RiskAnalysisResult` to stdout. The artifact identifies `openai.gpt-5.6`, remains `recommendation_only`, and contains only proposals marked `requires_developer_approval`. Errors, refusals, incomplete responses, invalid schemas, model mismatches, and unsupported provider claims go to stderr with exit code 4; no partial recommendation is emitted.
+
+`normalize-mcp` remains the deterministic no-network path and does not require the optional package. The OpenAI package sends the complete normalized tool definition to OpenAI, so remove real credentials, personal data, and sensitive examples/defaults first. See the optional package README for timeout, retry, privacy, cost, and prompt-injection limitations.
 
 ## PostgreSQL setup
 
@@ -125,6 +135,7 @@ The JSONL file contains only metric name, timestamp, and optional duration. It h
 - execution, observation, receipt, reconciliation, telemetry, and tool types
 - classified error classes and `isUnknownExecutionOutcome`
 - `@closure/writeguard/testing` adapter conformance helpers
+- `@closure/writeguard/analysis` normalized-tool, analysis, proposal, review, provenance, serialization, and injectable-analyzer contracts
 
 No internal state-machine, SQL-row, fake-provider, or schema module is exported.
 

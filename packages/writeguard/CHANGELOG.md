@@ -2,6 +2,11 @@
 
 This project follows Semantic Versioning.
 
+## 0.5.0 - Unreleased Build Week working version (2026-07-16)
+
+- Added the working `writeguard analyze` command, which dynamically loads the optional `@closure/writeguard-analyzer-openai` integration and keeps machine-readable output on stdout.
+- Preserved the deterministic core dependency boundary: no OpenAI SDK is included in `@closure/writeguard`.
+
 ## 0.4.0 - Unreleased Build Week working version (2026-07-16)
 
 - Added the explicit `@closure/writeguard/analysis` subpath with `writeguard.analysis/v1` runtime-validated contracts.

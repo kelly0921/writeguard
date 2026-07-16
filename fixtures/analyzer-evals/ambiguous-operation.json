@@ -1,0 +1,13 @@
+{
+  "name": "process_record",
+  "description": "Process a record. Depending on provider configuration this may validate data or update external state.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "recordId": { "type": "string" },
+      "payload": { "type": "object", "additionalProperties": true }
+    },
+    "required": ["recordId"],
+    "additionalProperties": false
+  }
+}

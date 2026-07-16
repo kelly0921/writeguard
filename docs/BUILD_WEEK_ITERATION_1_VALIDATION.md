@@ -2,7 +2,7 @@
 
 Date: July 16, 2026
 
-Status: **Iteration 1 complete locally. Not committed, published, deployed, or externally validated.**
+Status: **Iteration 1 complete and checkpointed locally at `9ecedf4` with annotated tag `build-week-iteration-1`. Not pushed, published, deployed, or externally validated.**
 
 ## Outcome
 
@@ -117,7 +117,7 @@ Validated toolchain: Node 24.17.0, pnpm 11.9.0, TypeScript 5.9.3, Vitest 3.2.7, 
 - Credential-shape rejection covers common obvious patterns, not every secret format.
 - No approval CLI, wrapper generator, generated failure tests, verification command, OpenAPI ingestion, UI, or hosted service exists.
 - No external developer has measured the under-ten-minute outcome.
-- The 0.4.0 package is unreleased and the GitHub workflow cannot run remotely until repository history exists.
+- The 0.4.0 package remains unreleased. Local Git history now begins at this honest Iteration 1 checkpoint; no remote CI result is claimed.
 
 ## Precise Iteration 2 recommendation
 
@@ -125,4 +125,4 @@ Create one optional workspace package implementing `ToolRiskAnalyzer` for GPT-5.
 
 ## Repository actions
 
-No commit, tag, branch push, pull request, package publication, deployment, or external upload occurred.
+After this validation report was first written, the authorized honest local checkpoint was created with commit `9ecedf4` (`build-week(iteration-1): add analysis contracts and MCP normalization`) and annotated tag `build-week-iteration-1`. No branch, commit, or tag was pushed; no pull request, package publication, deployment, or external upload occurred.

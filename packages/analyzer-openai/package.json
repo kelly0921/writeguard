@@ -1,0 +1,37 @@
+{
+  "name": "@closure/writeguard-analyzer-openai",
+  "version": "0.1.0",
+  "description": "Optional design-time GPT-5.6 risk analyzer for WriteGuard MCP tool definitions.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@closure/writeguard": "workspace:*",
+    "openai": "6.47.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
