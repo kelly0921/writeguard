@@ -1,0 +1,8 @@
+{
+  "name": "invalid tool name with spaces",
+  "description": "Invalid fixture",
+  "inputSchema": {
+    "type": "array",
+    "items": { "type": "string" }
+  }
+}

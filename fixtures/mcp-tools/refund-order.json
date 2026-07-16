@@ -1,0 +1,23 @@
+{
+  "name": "refund_order",
+  "description": "Create a partial or full refund for a previously captured order payment.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "tenantId": { "type": "string", "description": "Application tenant identifier" },
+      "orderId": { "type": "string", "description": "Stable business order identifier" },
+      "paymentIntentId": { "type": "string", "description": "Provider payment identifier" },
+      "amount": { "type": "integer", "minimum": 1, "description": "Minor currency units" },
+      "currency": { "type": "string", "minLength": 3, "maxLength": 3 }
+    },
+    "required": ["tenantId", "orderId", "paymentIntentId", "amount", "currency"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "title": "Refund order",
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": false,
+    "openWorldHint": true
+  }
+}

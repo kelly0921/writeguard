@@ -1,0 +1,19 @@
+{
+  "name": "lookup_order",
+  "description": "Read the current status of an order without changing external state.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "tenantId": { "type": "string" },
+      "orderId": { "type": "string" }
+    },
+    "required": ["tenantId", "orderId"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+  }
+}

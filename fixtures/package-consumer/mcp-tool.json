@@ -1,0 +1,16 @@
+{
+  "name": "lookup_order",
+  "description": "Read an order without changing it.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "orderId": { "type": "string" }
+    },
+    "required": ["orderId"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false
+  }
+}

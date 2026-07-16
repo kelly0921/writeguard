@@ -1,0 +1,12 @@
+{
+  "name": "@writeguard/stripe-adapter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@writeguard/core": "workspace:*",
+    "stripe": "^22.1.0",
+    "zod": "^3.25.0"
+  }
+}

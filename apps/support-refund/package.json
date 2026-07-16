@@ -1,0 +1,12 @@
+{
+  "name": "@writeguard/support-refund",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@writeguard/core": "workspace:*",
+    "@writeguard/sdk": "workspace:*",
+    "dotenv": "^17.0.0",
+    "pg": "^8.16.0"
+  }
+}

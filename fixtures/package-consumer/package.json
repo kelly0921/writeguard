@@ -1,0 +1,6 @@
+{
+  "name": "writeguard-clean-package-consumer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module"
+}

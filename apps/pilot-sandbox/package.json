@@ -1,0 +1,13 @@
+{
+  "name": "@writeguard/pilot-sandbox",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@closure/writeguard": "workspace:*",
+    "@writeguard/stripe-adapter": "workspace:*",
+    "dotenv": "^17.0.0",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  }
+}

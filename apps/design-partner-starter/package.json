@@ -1,0 +1,12 @@
+{
+  "name": "@writeguard/design-partner-starter",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@closure/writeguard": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  }
+}

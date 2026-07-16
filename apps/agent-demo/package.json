@@ -1,0 +1,14 @@
+{
+  "name": "@writeguard/agent-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@writeguard/core": "workspace:*",
+    "@writeguard/sdk": "workspace:*",
+    "dotenv": "^17.0.0",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@writeguard/refund-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@writeguard/core": "workspace:*",
+    "@writeguard/sdk": "workspace:*",
+    "@writeguard/stripe-adapter": "workspace:*",
+    "dotenv": "^17.0.0",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  }
+}

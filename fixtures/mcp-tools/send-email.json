@@ -1,0 +1,22 @@
+{
+  "name": "send_customer_email",
+  "description": "Send an outbound email to a customer on behalf of a support agent.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "tenantId": { "type": "string" },
+      "messageId": { "type": "string", "description": "Stable application message identifier" },
+      "recipientEmail": { "type": "string", "format": "email" },
+      "subject": { "type": "string", "maxLength": 200 },
+      "body": { "type": "string", "maxLength": 20000 }
+    },
+    "required": ["tenantId", "messageId", "recipientEmail", "subject", "body"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": false,
+    "openWorldHint": true
+  }
+}

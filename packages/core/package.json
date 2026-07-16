@@ -1,0 +1,13 @@
+{
+  "name": "@writeguard/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "dotenv": "^17.0.0",
+    "drizzle-orm": "^0.45.2",
+    "pg": "^8.16.0",
+    "zod": "^3.25.0"
+  }
+}

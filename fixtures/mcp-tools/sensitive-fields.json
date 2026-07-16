@@ -1,0 +1,28 @@
+{
+  "name": "create_account_record",
+  "description": "Create an external account record using application-supplied credentials.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "accountId": { "type": "string" },
+      "apiKey": { "type": "string", "description": "Credential supplied at execution time" },
+      "authorizationToken": { "type": "string" },
+      "customer": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" }
+        },
+        "required": ["email"]
+      },
+      "cardNumber": { "type": "string" }
+    },
+    "required": ["accountId", "apiKey", "customer"],
+    "additionalProperties": false
+  },
+  "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "openWorldHint": true
+  }
+}

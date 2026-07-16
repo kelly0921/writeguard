@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  esbuild: true
+
+confirmModulesPurge: false
+
+# OneDrive can hold pnpm's hard-linked package files open during a reinstall.
+# Copying packages keeps local development deterministic on this Windows workspace.
+packageImportMethod: copy

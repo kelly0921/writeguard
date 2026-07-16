@@ -1,0 +1,45 @@
+name: WriteGuard CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  pilot-ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: closure
+          POSTGRES_PASSWORD: closure
+          POSTGRES_DB: closure
+        ports:
+          - 54327:5432
+        options: >-
+          --health-cmd "pg_isready -U closure -d closure"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://closure:closure@localhost:54327/closure
+      TEST_DATABASE_URL: postgresql://closure:closure@localhost:54327/closure
+      PILOT_DATABASE_URL: postgresql://closure:closure@localhost:54327/closure
+      PILOT_PROVIDER: fake
+      PILOT_TELEMETRY_FILE: .writeguard/pilot-telemetry.jsonl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.9.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate:pilot-ci
