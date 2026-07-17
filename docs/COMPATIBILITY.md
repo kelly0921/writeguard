@@ -6,7 +6,7 @@
 |---|---|---|
 | `@closure/writeguard` | 0.3.0 baseline; 0.4.0/0.5.0 checkpoints; 0.8.0 unreleased | Pilot package plus additive analysis, approval, generation, verification, policy CLI, and conformance-receipt surface |
 | `@closure/writeguard-analyzer-openai` | 0.1.1 unreleased | Node-only, design-time GPT-5.6 integration; deterministic transport and 9/9 live fixtures validated |
-| `@closure/writeguard-generator` | 0.3.0 unreleased | Node-only deterministic generation, verification, receipt policy, and evaluation report rendering; no OpenAI dependency |
+| `@closure/writeguard-generator` | 0.3.1 unreleased | Node-only deterministic generation, verification, receipt policy, and evaluation report rendering; no OpenAI dependency |
 | OpenAI JavaScript SDK | 6.47.0 | Optional analyzer package only; absent from the core production graph |
 | Node.js | 24.17.0 | Package declares Node >=20; other supported Node majors still require CI evidence |
 | Module system | ESM / NodeNext | CommonJS consumption is not currently validated |

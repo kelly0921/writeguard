@@ -1,30 +1,41 @@
 # Build Week Iteration 6 validation
 
-Status: local audit complete; remote publication, remote CI, fresh-clone validation, and external evaluators pending owner action.
+Status: private remote and PostgreSQL CI verified; a second Windows/Linux evaluation fix is locally validated and pending owner-approved push; external evaluators remain pending.
 
 ## Local evidence
 
 - Sealed Iteration 5 commit/tag confirmed at `9981422094b30c245d779698f38ff39e822e13db`.
 - Working tree was clean before Iteration 6 preparation.
-- No remote is configured.
-- Default decision remains private repository with no public license.
+- Private remote configured at `https://github.com/kelly0921/writeguard.git`; repository remains private with no public license.
 - Repository inventory contains 249 tracked files totaling 1,172,728 bytes.
 - No tracked absolute user paths or tracked local environment/database/log/cache/build artifacts were found.
 - No OpenAI, Stripe, or database key was present.
-- `pnpm evaluate:local` passed in 76.528 seconds with 2 unsafe simulated effects, 1 guarded effect, passing policy/conformance, and real-provider semantics `not_run`.
+- `pnpm evaluate:local` passes with 2 unsafe simulated effects, 1 guarded effect, passing policy/conformance, and real-provider semantics `not_run`.
 - `pnpm security:scan` passed.
 - `pnpm docs:scan` passed after preparation edits across 54 documentation/workflow files.
 - `pnpm validate:evaluation-ci` passed with the expanded Windows/Linux release-candidate matrix workflow.
-- Release manifest package versions and all three packed-artifact hashes were validated locally.
+- Generator advanced by a patch release to `@closure/writeguard-generator@0.3.1` after remote Windows CI exposed a false positive caused by Windows short-path canonicalization.
+- The verifier regression suite now has 172 passing unit tests, including a platform-directory-alias case while retaining generated-content symlink rejection.
+- A zero-artifact Windows clone passed public package builds, typecheck, repository build, 172 unit tests, generated-artifact validation, packed-generator installation, dependency-boundary checks, secret/document scans, and canonical evaluation.
+- LF checkout policy reproduced canonical report digest `d3c3707861b864a43632fddc1b62997c14bc8b92bab593e67c577001bb18889b` across the workspace and clean clone without normalizing verifier input bytes at runtime.
+- Release manifest package versions and all three packed-artifact hashes were validated locally; the generator tarball is 48,193 bytes with SHA-256 `f5a22286a391a1f35a7a55a179693231854f8e252e134577c48e91022d7c8098`.
 - No validation service remains running.
 - Public package tarball hashes are recorded in `docs/RELEASE_CANDIDATE_MANIFEST.json`.
 
+## Remote evidence
+
+- Preparation commit `444664a7e43d1e9abfe4823ffe0b3cad981345c7` and annotated Iteration 1–5 tags were pushed only after owner approval.
+- Clean-checkout ordering fix `1d4a4c52141a0a221caf209884959bfbf5438f8a` was pushed only after a second owner approval.
+- [WriteGuard CI run 29588806949](https://github.com/kelly0921/writeguard/actions/runs/29588806949) passed the PostgreSQL-backed pilot gate.
+- [WriteGuard evaluation run 29588806950](https://github.com/kelly0921/writeguard/actions/runs/29588806950) completed all Linux validation commands but failed hidden-directory artifact upload; Windows passed install, all public builds, typecheck, and repository build before verifier tests exposed the path-alias false positive.
+- Fresh private-remote clone of `1d4a4c52141a0a221caf209884959bfbf5438f8a` passed frozen install and the documented canonical evaluation in 47.5 seconds. Final-candidate fresh-clone evidence remains pending.
+
 ## Pending evidence
 
-- Owner-approved repository owner, name, visibility, and remote push
-- Remote Windows CI
-- Remote Linux CI
-- Fresh-clone judge instructions
+- Owner approval and push of the second evaluation fix
+- Green remote Windows evaluation
+- Green remote Linux evaluation with sanitized artifact upload
+- Final-candidate fresh-clone judge instructions
 - Unaffiliated evaluator 1
 - Unaffiliated evaluator 2
 - P0/P1 triage and any retest
@@ -35,4 +46,4 @@ Status: local audit complete; remote publication, remote CI, fresh-clone validat
 
 Stripe test-mode validation remains pending and unauthorized. It is not a blocker for the simulated release candidate.
 
-No repository, package, media, or Devpost submission has been published or uploaded.
+No package, media, or Devpost submission has been published or uploaded. Repository changes exist only in the owner-approved private GitHub repository.

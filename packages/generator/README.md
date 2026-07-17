@@ -2,7 +2,7 @@
 
 Optional Node-only design-time generation and verification for WriteGuard. The package accepts a validated normalized tool, bound recommendation-only analysis, and separately attested writeguard.generation/v1 review.
 
-Generation is deterministic and network-free. Version 0.3.0 emits a typed wrapper, provider boundary, configuration, simulated-provider failure tests, a writeguard-verification-bundle/v1 binding bundle, and a content-digested writeguard.generation-manifest/v1 manifest. It never calls a model and generated runtime code has no OpenAI dependency.
+Generation is deterministic and network-free. Version 0.3.1 emits a typed wrapper, provider boundary, configuration, simulated-provider failure tests, a writeguard-verification-bundle/v1 binding bundle, and a content-digested writeguard.generation-manifest/v1 manifest. It never calls a model and generated runtime code has no OpenAI dependency.
 
 Programmatic generation:
 
@@ -43,7 +43,7 @@ Generated-test execution is explicit. It rechecks integrity, compiles with fixed
 
 Every writeguard.verification/v1 receipt states what ran, what did not run, and why. Digests prove integrity and binding, not authenticity. Compilation and simulated providers never prove real-provider semantics.
 
-Version 0.3.0 also exports:
+Version 0.3.1 also exports:
 
 - `writeguard.verification-policy/v1` and deterministic policy evaluation for named CI requirements;
 - `writeguard.verification-policy-evaluation/v1` receipts with evidence identifiers, limitations, and next actions;

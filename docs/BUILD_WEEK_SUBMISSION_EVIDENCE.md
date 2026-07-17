@@ -25,7 +25,7 @@ GPT-5.6 is an optional design-time analyzer. It returns structured, recommendati
 ## Technical evidence
 
 - Canonical command: `pnpm evaluate:local`
-- Clean consumer: packed `@closure/writeguard@0.8.0` and `@closure/writeguard-generator@0.3.0`; no workspace/private imports
+- Clean consumer: packed `@closure/writeguard@0.8.0` and `@closure/writeguard-generator@0.3.1`; no workspace/private imports
 - Core analyzer: `@closure/writeguard-analyzer-openai@0.1.1`
 - Contracts: analysis, generation, verification, verification policy/evaluation, adapter conformance, and local evaluation are runtime validated and versioned
 - Offline calls: OpenAI 0; Stripe 0; other providers 0; PostgreSQL not required

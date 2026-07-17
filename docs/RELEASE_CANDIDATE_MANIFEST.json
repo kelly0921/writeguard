@@ -1,18 +1,18 @@
 {
   "schemaVersion": "writeguard.release-candidate/v1",
-  "status": "pre_remote_audit",
+  "status": "remote_validation_in_progress",
   "git": {
     "baselineCommit": "9981422094b30c245d779698f38ff39e822e13db",
     "baselineTag": "build-week-iteration-5",
     "branch": "master",
     "finalFreezeTag": "build-week-iteration-6",
     "finalFreezeCommit": null,
-    "configuredRemote": null
+    "configuredRemote": "https://github.com/kelly0921/writeguard.git"
   },
   "packages": {
     "@closure/writeguard": "0.8.0",
     "@closure/writeguard-analyzer-openai": "0.1.1",
-    "@closure/writeguard-generator": "0.3.0"
+    "@closure/writeguard-generator": "0.3.1"
   },
   "toolchain": {
     "nodeRequired": ">=20",
@@ -27,7 +27,7 @@
       "windows-latest",
       "ubuntu-latest"
     ],
-    "remoteCiStatus": "not_run",
+    "remoteCiStatus": "postgresql_passed_evaluation_second_fix_pending",
     "macosStatus": "not_validated"
   },
   "evaluation": {
@@ -36,7 +36,7 @@
       "minimum": 30,
       "maximum": 120
     },
-    "latestLocalRuntimeMs": 76528,
+    "latestLocalRuntimeMs": 47935,
     "unsafeSimulatedEffects": 2,
     "guardedSimulatedEffects": 1,
     "credentialsRequired": [],
@@ -47,15 +47,15 @@
       "afterCleanConsumerInstall": "no provider or model network calls"
     },
     "reportContract": "writeguard.local-evaluation/v1",
-    "reportDigest": "ad595f780f02049eb2f467a052c0199836dafd7559f3c1838ad463c0c8c4df60",
+    "reportDigest": "d3c3707861b864a43632fddc1b62997c14bc8b92bab593e67c577001bb18889b",
     "policyResult": "passed",
     "adapterConformanceResult": "passed",
     "realProviderSemantics": "not_run"
   },
   "tests": {
-    "unit": 171,
+    "unit": 172,
     "integration": 20,
-    "repositoryTotal": 191,
+    "repositoryTotal": 192,
     "generatedFailureScenarios": 5,
     "adapterConformanceScenarios": 6,
     "pilotSpecificTests": 6
@@ -75,7 +75,7 @@
     "evaluator1": "pending",
     "evaluator2": "pending",
     "maintainerCleanRoomTiming": "pending",
-    "freshRemoteClone": "pending"
+    "freshRemoteClone": "passed_on_private_master_1d4a4c52141a0a221caf209884959bfbf5438f8a; final candidate pending"
   },
   "packedArtifacts": [
     {
@@ -89,9 +89,9 @@
       "sha256": "65e82ce06e0bc367956d1efca51d3c40034666131deef7497270883361a4be8b"
     },
     {
-      "name": "closure-writeguard-generator-0.3.0.tgz",
-      "bytes": 48166,
-      "sha256": "4009fb71778728db076447e0a3c485420e8343acf84e70cdd8874ccdaf7b1e6b"
+      "name": "closure-writeguard-generator-0.3.1.tgz",
+      "bytes": 48193,
+      "sha256": "f5a22286a391a1f35a7a55a179693231854f8e252e134577c48e91022d7c8098"
     }
   ],
   "provenance": {
@@ -119,6 +119,7 @@
     "Compilation proves public API type compatibility, not provider correctness.",
     "Digests prove integrity and binding, not authorship or authenticity.",
     "Durable deployment requires reviewed provider hooks and PostgreSQL-backed storage.",
-    "Remote CI, fresh-clone testing, and two unaffiliated developer evaluations are pending."
+    "The PostgreSQL remote workflow passed; the Windows/Linux evaluation fix still requires an approved push and green rerun.",
+    "Final-candidate fresh-clone testing and two unaffiliated developer evaluations are pending."
   ]
 }

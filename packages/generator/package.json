@@ -1,6 +1,6 @@
 {
   "name": "@closure/writeguard-generator",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Deterministic WriteGuard generation plus integrity, compilation, and opt-in failure-test verification.",
   "type": "module",
   "main": "./dist/index.js",

@@ -17,7 +17,7 @@ import {
 import { WriteGuardGeneratorError } from "./errors.js";
 
 export const GENERATOR_ID = "closure.writeguard-generator" as const;
-export const GENERATOR_VERSION = "0.3.0" as const;
+export const GENERATOR_VERSION = "0.3.1" as const;
 export const GENERATOR_TEMPLATE_VERSION = "writeguard.typescript-wrapper/v2" as const;
 export const GENERATION_MANIFEST_VERSION = "writeguard.generation-manifest/v1" as const;
 export const VERIFICATION_BUNDLE_VERSION = "writeguard.verification-bundle/v1" as const;

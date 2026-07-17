@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, symlink, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { normalizeMcpToolDefinition } from "@closure/writeguard/analysis";
 import {
@@ -90,6 +90,27 @@ describe("generated integration verifier", () => {
     expect(first.receipt).toEqual(second.receipt);
     expect(first.receiptDigest).toBe(second.receiptDigest);
     expect(runner.requests).toHaveLength(1);
+  });
+
+  it("canonicalizes a real target reached through a platform directory alias", async () => {
+    const root = await generatedDirectory();
+    const aliasContainer = await mkdtemp(join(tmpdir(), "writeguard-verifier-alias-"));
+    roots.push(aliasContainer);
+    const alias = join(aliasContainer, "parent-alias");
+    await symlink(dirname(root), alias, "junction");
+    try {
+      const result = await verifyGeneratedIntegration(
+        { directory: join(alias, "generated") },
+        { processRunner: new QueueRunner([passedProcess()]) }
+      );
+      expect(result.receipt.overallResult).toBe("passed_with_limitations");
+      expect(result.receipt.levels).toContainEqual(expect.objectContaining({
+        level: "artifact_integrity",
+        status: "passed"
+      }));
+    } finally {
+      await unlink(alias);
+    }
   });
 
   it.each([

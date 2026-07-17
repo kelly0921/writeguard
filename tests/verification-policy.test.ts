@@ -53,7 +53,7 @@ function receipt(overrides: Partial<VerificationReceipt> = {}): VerificationRece
     kind: "writeguard_verification_receipt",
     verifier: {
       id: "closure.writeguard-generator-verifier",
-      version: "0.3.0"
+      version: "0.3.1"
     },
     mode: "safe_static_and_generated_tests",
     overallResult: "passed_with_limitations",

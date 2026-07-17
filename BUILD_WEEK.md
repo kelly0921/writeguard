@@ -4,7 +4,7 @@
 
 Build Week work began on July 16, 2026. The submission period runs from July 13 through July 21, 2026 at 5:00 PM PT / 8:00 PM ET.
 
-The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased Iteration checkpoints and advances the additive working line to `@closure/writeguard@0.8.0` and `@closure/writeguard-generator@0.3.0` for the Iteration 5 evaluation release candidate.
+The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased Iteration checkpoints and advances the additive working line to `@closure/writeguard@0.8.0` and `@closure/writeguard-generator@0.3.1`; the generator patch corrects platform-path canonicalization found during Iteration 6 remote CI.
 
 On July 16, 2026, `npm view @closure/writeguard@0.3.0 --json` queried the configured public registry (`https://registry.npmjs.org/`) and returned `E404 Not Found`. Publication timestamp, registry integrity, shasum, and dist metadata were therefore unavailable and are not fabricated here. The artifact may be unpublished, private, differently scoped, or inaccessible without registry authorization; none of those possibilities is claimed as fact. Until independently verifiable registry metadata is supplied, documentation must call 0.3.0 a pre-Build Week local package baseline—not a verified public npm release.
 
@@ -128,6 +128,12 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 - Added one canonical packed-package evaluation with a recorded GPT-5.6-compatible analysis fixture, explicit approval, deterministic generation, static verification, opt-in tests, simulated integration, and receipt-derived reports.
 - Added runtime-validated verification-policy, policy-evaluation, adapter-conformance, and local-evaluation contracts.
 - Added an honest CI example, external evaluator guide, evidence checklist, and documentation hygiene gate.
+
+### 2026-07-17 — Iteration 6 (in progress)
+
+- Advanced unreleased `@closure/writeguard-generator` to 0.3.1 as a patch-level verifier correction after remote Windows CI exposed platform-path alias handling.
+- Added a repository line-ending contract so byte-bound evaluation inputs remain reproducible across Windows and Linux checkouts.
+- Private remote and PostgreSQL CI are verified; the second Windows/Linux evaluation fix and external-developer evidence remain pending.
 - Recorded the missing repository license as a release blocker instead of selecting one without owner approval.
 
 ## Validation evidence

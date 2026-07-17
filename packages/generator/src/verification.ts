@@ -369,13 +369,9 @@ async function assertRootDirectory(root: string): Promise<string> {
   if (state.isSymbolicLink() || !state.isDirectory()) {
     throw new VerificationFailure("directory_unsafe", "The verification target must be a real directory, not a symlink or file.");
   }
-  const canonical = await realpath(root);
-  const left = process.platform === "win32" ? root.toLocaleLowerCase("en-US") : root;
-  const right = process.platform === "win32" ? canonical.toLocaleLowerCase("en-US") : canonical;
-  if (left !== right) {
-    throw new VerificationFailure("directory_symlink_ancestor", "The verification target resolves through a symlinked path.");
-  }
-  return canonical;
+  // Canonicalize platform aliases such as Windows 8.3 names and macOS /var
+  // before applying the inside-root realpath and inventory checks below.
+  return realpath(root);
 }
 
 async function readSafeFile(root: string, relativePath: string): Promise<Buffer> {

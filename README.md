@@ -6,7 +6,7 @@ It is intended for agent-tool, backend, platform, reliability, and payments deve
 
 This repository is an evaluation release candidate, not a production payment system or a general agent framework. **Sandbox and external evaluation only; not production-certified.** Real external-developer results recorded so far: zero.
 
-The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.0`. Iteration 5 turns the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.1`. Iteration 5 turns the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
 
 ## Evaluate locally
 
@@ -161,7 +161,7 @@ The ordinary retry demo intentionally creates two fake refunds after two ambiguo
 
 ## Installable package
 
-Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.8.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.3.0` only for `generate`, `verify`, and receipt-policy evaluation.
+Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.8.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.3.1` only for `generate`, `verify`, and receipt-policy evaluation.
 
 ```ts
 import {

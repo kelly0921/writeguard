@@ -8,6 +8,9 @@ const workflow = (
 const pilotWorkflow = (
   await readFile(resolve(root, ".github", "workflows", "ci.yml"), "utf8")
 ).replaceAll("\r\n", "\n");
+const gitAttributes = (
+  await readFile(resolve(root, ".gitattributes"), "utf8")
+).replaceAll("\r\n", "\n");
 
 const required = [
   "permissions:\n  contents: read",
@@ -30,7 +33,8 @@ const required = [
   "pnpm evaluate:local",
   "actions/upload-artifact@v4",
   ".writeguard/evaluation-*",
-  "hashFiles('.writeguard/evaluation-*') != ''"
+  "hashFiles('.writeguard/evaluation-*') != ''",
+  "include-hidden-files: true"
 ];
 for (const value of required) {
   if (!workflow.includes(value)) {
@@ -56,6 +60,11 @@ for (const value of [
 ]) {
   if (!pilotWorkflow.includes(value)) {
     throw new Error(`Pilot workflow is missing required content: ${value}`);
+  }
+}
+for (const value of ["* text=auto eol=lf", "*.tgz binary"]) {
+  if (!gitAttributes.includes(value)) {
+    throw new Error(`Git attributes are missing required content: ${value}`);
   }
 }
 console.log("Evaluation CI example passes local structural validation.");

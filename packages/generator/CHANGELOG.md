@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1 - Unreleased
+
+- Fixed verifier root canonicalization for Windows short-path and platform directory aliases while preserving inside-root symlink and realpath escape checks.
+
 ## 0.3.0 - Unreleased
 
 - Added runtime-validated verification-policy and policy-evaluation contracts with deterministic digests and named CI evidence.

@@ -97,7 +97,7 @@ Generated-test execution is opt-in, follows successful integrity checks, uses fi
 - Unknown versions fail with actionable errors and are never silently coerced.
 - The 0.4.0 checkpoint added `./analysis` and a CLI bin without removing `.` or `./testing`; unreleased 0.5.0 added dynamic analysis; 0.6.0 added generation contracts; 0.7.0 adds the dynamic safe-default verification CLI.
 - Generated artifacts must record the contract version and source/analysis digest.
-- `@closure/writeguard-analyzer-openai@0.1.1` and `@closure/writeguard-generator@0.2.0` depend only on public contracts. The core does not depend on either optional package or the OpenAI SDK; the generator and verifier have no OpenAI dependency.
+- `@closure/writeguard-analyzer-openai@0.1.1` and `@closure/writeguard-generator@0.3.1` depend only on public contracts. The core does not depend on either optional package or the OpenAI SDK; the generator and verifier have no OpenAI dependency.
 
 ## Security, privacy, and redaction
 
