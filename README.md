@@ -2,6 +2,8 @@
 
 WriteGuard is a small TypeScript execution guard for consequential external writes. It proves one narrow thesis: when an external action succeeds but the caller loses the acknowledgement, a retry should reconcile the uncertain result before it considers executing the action again.
 
+It is intended for agent-tool, backend, platform, reliability, and payments developers evaluating how to protect consequential provider actions without putting a model in the enforcement path.
+
 This repository is an evaluation release candidate, not a production payment system or a general agent framework. **Sandbox and external evaluation only; not production-certified.** Real external-developer results recorded so far: zero.
 
 The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.0`. Iteration 5 turns the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
@@ -15,7 +17,7 @@ pnpm install --frozen-lockfile
 pnpm evaluate:local
 ```
 
-The validated Windows run takes about 40 seconds after dependencies are available; this is automated command time, not developer onboarding time. Windows 11 is locally validated. The checked CI example targets Windows and Ubuntu, but remote CI has not run; macOS remains unvalidated.
+Recorded Windows runs have taken roughly 40–80 seconds; allow up to two minutes depending on package-cache and registry conditions. This is automated command time, not developer onboarding time. Windows 11 is locally validated. The checked CI example targets Windows and Ubuntu, but remote CI has not run; macOS remains unvalidated.
 
 This canonical command installs packed public packages into a clean temporary consumer, then demonstrates:
 

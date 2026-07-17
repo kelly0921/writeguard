@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "writeguard.release-candidate/v1",
+  "status": "pre_remote_audit",
+  "git": {
+    "baselineCommit": "9981422094b30c245d779698f38ff39e822e13db",
+    "baselineTag": "build-week-iteration-5",
+    "branch": "master",
+    "finalFreezeTag": "build-week-iteration-6",
+    "finalFreezeCommit": null,
+    "configuredRemote": null
+  },
+  "packages": {
+    "@closure/writeguard": "0.8.0",
+    "@closure/writeguard-analyzer-openai": "0.1.1",
+    "@closure/writeguard-generator": "0.3.0"
+  },
+  "toolchain": {
+    "nodeRequired": ">=20",
+    "nodeValidated": "24.17.0",
+    "pnpmRequired": "11.9.0"
+  },
+  "platforms": {
+    "locallyValidated": [
+      "Windows 11"
+    ],
+    "remoteCiDeclared": [
+      "windows-latest",
+      "ubuntu-latest"
+    ],
+    "remoteCiStatus": "not_run",
+    "macosStatus": "not_validated"
+  },
+  "evaluation": {
+    "command": "pnpm evaluate:local",
+    "expectedAutomatedRuntimeSeconds": {
+      "minimum": 30,
+      "maximum": 120
+    },
+    "latestLocalRuntimeMs": 76528,
+    "unsafeSimulatedEffects": 2,
+    "guardedSimulatedEffects": 1,
+    "credentialsRequired": [],
+    "databaseRequired": false,
+    "network": {
+      "repositoryInstall": "npm registry access may be required",
+      "cleanConsumerInstall": "npm registry access may be required when dependencies are not cached",
+      "afterCleanConsumerInstall": "no provider or model network calls"
+    },
+    "reportContract": "writeguard.local-evaluation/v1",
+    "reportDigest": "ad595f780f02049eb2f467a052c0199836dafd7559f3c1838ad463c0c8c4df60",
+    "policyResult": "passed",
+    "adapterConformanceResult": "passed",
+    "realProviderSemantics": "not_run"
+  },
+  "tests": {
+    "unit": 171,
+    "integration": 20,
+    "repositoryTotal": 191,
+    "generatedFailureScenarios": 5,
+    "adapterConformanceScenarios": 6,
+    "pilotSpecificTests": 6
+  },
+  "modelEvidence": {
+    "canonicalAnalysis": "recorded_sanitized_gpt-5.6-compatible_fixture",
+    "canonicalLiveCall": false,
+    "historicalLiveEvaluation": "9_of_9_passed",
+    "exactHistoricalPayloadRetained": false
+  },
+  "providerEvidence": {
+    "canonicalProvider": "simulated",
+    "stripeTestMode": "pending_not_authorized",
+    "productionProviderSemantics": "not_verified"
+  },
+  "externalValidation": {
+    "evaluator1": "pending",
+    "evaluator2": "pending",
+    "maintainerCleanRoomTiming": "pending",
+    "freshRemoteClone": "pending"
+  },
+  "packedArtifacts": [
+    {
+      "name": "closure-writeguard-0.8.0.tgz",
+      "bytes": 77715,
+      "sha256": "dc14935547710612dd227df7dcb0c703a04cb51a10f1ab86d7ce0a4410eb013e"
+    },
+    {
+      "name": "closure-writeguard-analyzer-openai-0.1.1.tgz",
+      "bytes": 16190,
+      "sha256": "65e82ce06e0bc367956d1efca51d3c40034666131deef7497270883361a4be8b"
+    },
+    {
+      "name": "closure-writeguard-generator-0.3.0.tgz",
+      "bytes": 48166,
+      "sha256": "4009fb71778728db076447e0a3c485420e8343acf84e70cdd8874ccdaf7b1e6b"
+    }
+  ],
+  "provenance": {
+    "buildWeekTags": [
+      "build-week-iteration-1",
+      "build-week-iteration-2",
+      "build-week-iteration-3",
+      "build-week-iteration-4",
+      "build-week-iteration-5"
+    ],
+    "sources": [
+      "package.json",
+      "packages/writeguard/package.json",
+      "packages/analyzer-openai/package.json",
+      "packages/generator/package.json",
+      "docs/BUILD_WEEK_ITERATION_5_VALIDATION.md",
+      ".writeguard/evaluation-report.json",
+      ".writeguard/evaluation-runtime.json"
+    ]
+  },
+  "knownLimitations": [
+    "The canonical analysis is recorded and does not make a live GPT-5.6 call.",
+    "Simulated tests do not establish real-provider semantics.",
+    "Generated-test child-process execution is not a security sandbox.",
+    "Compilation proves public API type compatibility, not provider correctness.",
+    "Digests prove integrity and binding, not authorship or authenticity.",
+    "Durable deployment requires reviewed provider hooks and PostgreSQL-backed storage.",
+    "Remote CI, fresh-clone testing, and two unaffiliated developer evaluations are pending."
+  ]
+}
