@@ -48,4 +48,12 @@ These become credible only if multiple teams need shared operation identity and 
 
 ## Recommended next build
 
-Do not broaden the platform yet. Harden the Stripe refund contract, run the credentialed test-mode demo, and integrate the SDK into one real agent or worker. The key validation is whether a developer can supply reliable identity, reconciliation, and verification with materially less bespoke failure-handling code—not whether another orchestration surface can be built.
+Iteration 6 should be external evaluation and one provider-specific test-mode conformance run, not a broader platform:
+
+1. Resolve the owner-controlled license decision.
+2. Push only after review and obtain actual Ubuntu/Windows CI evidence.
+3. Observe at least one unassisted external developer using `pnpm evaluate:local`; record confusion, trust, limitations comprehension, and honestly classified time.
+4. Use a freshly rotated test credential to apply the public six-scenario conformance receipt to one real provider adapter where the provider supports each scenario.
+5. Refine docs/contracts only from that evidence; do not add a dashboard, hosted control plane, adapter catalog, or production claim.
+
+The key validation remains whether a developer can supply reliable identity, reconciliation, and verification with materially less bespoke failure-handling code.

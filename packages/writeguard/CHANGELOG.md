@@ -2,6 +2,12 @@
 
 This project follows Semantic Versioning.
 
+## 0.8.0 - Unreleased Build Week evaluation candidate (2026-07-17)
+
+- Added `writeguard policy check`, dynamically backed by the optional generator package, with JSON output and distinct exit code 7.
+- Extended `@closure/writeguard/testing` with versioned, deterministic six-scenario conformance receipts and explicit simulated/test-mode/production evidence labels.
+- Preserved the existing adapter `run()` API and the deterministic runtime dependency boundary.
+
 ## 0.7.0 - Unreleased Build Week working version (2026-07-17)
 
 - Added the packaged writeguard verify CLI, dynamically backed by the optional generator package.

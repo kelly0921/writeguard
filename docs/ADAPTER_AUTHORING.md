@@ -89,6 +89,11 @@ import { defineAdapterContractTests } from "@closure/writeguard/testing";
 
 const contract = defineAdapterContractTests({
   name: "my-provider",
+  provider: {
+    id: "my-provider-adapter",
+    version: "1.0.0",
+    environment: "test_mode"
+  },
   createHarness: async scenario => ({
     key: `contract:${scenario}`,
     fingerprint: { scenario },
@@ -102,9 +107,19 @@ const contract = defineAdapterContractTests({
 
 const results = await contract.run();
 if (results.some(result => !result.passed)) throw new Error(JSON.stringify(results));
+
+const receipt = await contract.runReceipt();
 ```
 
 Required scenarios are success, confirmed failure, timeout after success, duplicate invocation, reconciliation unavailable, and ambiguous matches.
+
+`run()` remains the simple test-runner API. `runReceipt()` returns a deterministic, runtime-validated `writeguard.adapter-conformance/v1` receipt with sanitized per-scenario status, verified guarantees, limitations, and an explicit evidence environment:
+
+- `simulated`: deterministic local provider only;
+- `test_mode`: a named provider's non-production environment;
+- `production`: production evidence, which must be set deliberately and is never inferred.
+
+An adapter may explicitly return `{ unsupported: true, reason }` for a scenario it cannot implement. The receipt reports `unsupported` and `passed_with_unsupported`; it never fabricates a pass. Raw provider errors are not copied into receipts. Passing simulated or test-mode scenarios does not prove production semantics.
 
 ## Adapter acceptance checklist
 
@@ -116,5 +131,5 @@ Required scenarios are success, confirmed failure, timeout after success, duplic
 - Verification checks the actual business postcondition.
 - Reversibility claim is credible.
 - Logs, metadata, receipts, and telemetry exclude sensitive payloads.
-- Conformance kit passes.
+- Conformance receipt is valid, names the correct environment, and has no failed or unexpectedly unsupported scenario.
 - A sandbox lost-acknowledgement run creates exactly one effect.

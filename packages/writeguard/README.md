@@ -2,7 +2,7 @@
 
 WriteGuard gives agent-triggered external writes a stable business-operation identity, a durable PostgreSQL claim, explicit `UNKNOWN` handling, reconciliation, verification, and a terminal receipt.
 
-The unreleased 0.7.0 Build Week line exposes deterministic MCP tool normalization plus versioned analysis and generation-approval contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis, source generation, and generated-integration verification live in separate optional packages and remain outside runtime execution.
+The unreleased 0.8.0 Build Week line exposes deterministic MCP tool normalization plus versioned analysis and generation-approval contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis, source generation, generated-integration verification, receipt policy, and report rendering live in separate optional packages and remain outside runtime execution.
 
 ## Install
 
@@ -76,6 +76,12 @@ Execute the manifest-owned generated failure test only with explicit opt-in:
 The command emits a `writeguard.verification/v1` run to stdout and returns exit code 6 when required verification fails. Operational errors and the `--run-tests` child-process disclosure use stderr. Static mode never executes generated JavaScript or target package scripts. The verifier ignores target TypeScript plugins and uses fixed compiler arguments.
 
 Passing verification proves only the levels stated in the receipt. Hashes establish integrity and binding, not authenticity. Compilation proves public API type compatibility. Simulated generated tests do not establish real-provider behavior, and real-provider semantics remain `not_run` unless a separate provider-specific conformance workflow actually runs.
+
+Evaluate a receipt against a versioned policy:
+
+    writeguard policy check verification.json --policy writeguard.policy.json --pretty
+
+Policy pass exits 0; invalid or unmet policy exits 7. The optional generator package performs the evaluation. It evaluates named evidence already present in the receipt and never converts undeclared or unverified provider behavior into a pass.
 
 ## PostgreSQL setup
 
@@ -162,7 +168,7 @@ The JSONL file contains only metric name, timestamp, and optional duration. It h
 - `createLocalPilotTelemetry`, `PilotTelemetry`
 - execution, observation, receipt, reconciliation, telemetry, and tool types
 - classified error classes and `isUnknownExecutionOutcome`
-- `@closure/writeguard/testing` adapter conformance helpers
+- `@closure/writeguard/testing` six-scenario adapter conformance helpers and `writeguard.adapter-conformance/v1` receipts with explicit simulated/test-mode/production labels
 - `@closure/writeguard/analysis` normalized-tool, analysis, proposal, review, approval-bound generation request, provenance, serialization, and injectable-analyzer contracts
 
 No internal state-machine, SQL-row, fake-provider, or schema module is exported.

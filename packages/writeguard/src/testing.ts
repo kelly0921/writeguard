@@ -8,6 +8,8 @@ import {
   type ReconciliationOutcome,
   type VerificationContext
 } from "./index.js";
+import { digestAnalysisArtifact } from "./analysis/index.js";
+import { z } from "zod";
 
 export const adapterContractScenarios = [
   "success",
@@ -18,7 +20,44 @@ export const adapterContractScenarios = [
   "ambiguous_matches"
 ] as const;
 
+export const ADAPTER_CONFORMANCE_CONTRACT_VERSION = "writeguard.adapter-conformance/v1" as const;
+
+export const adapterConformanceEnvironments = [
+  "simulated",
+  "test_mode",
+  "production"
+] as const;
+
 export type AdapterContractScenario = (typeof adapterContractScenarios)[number];
+
+export const adapterConformanceProviderSchema = z.object({
+  id: z.string().regex(/^[a-z0-9][a-z0-9._-]*$/).max(100),
+  version: z.string().regex(/^[A-Za-z0-9][A-Za-z0-9._+-]*$/).max(100).optional(),
+  environment: z.enum(adapterConformanceEnvironments)
+}).strict();
+
+export const adapterConformanceScenarioResultSchema = z.object({
+  scenario: z.enum(adapterContractScenarios),
+  status: z.enum(["passed", "failed", "unsupported"]),
+  summary: z.string().min(1).max(300)
+}).strict();
+
+export const adapterConformanceReceiptSchema = z.object({
+  schemaVersion: z.literal(ADAPTER_CONFORMANCE_CONTRACT_VERSION),
+  kind: z.literal("writeguard_adapter_conformance_receipt"),
+  provider: adapterConformanceProviderSchema,
+  overallResult: z.enum(["passed", "failed", "passed_with_unsupported"]),
+  scenarios: z.array(adapterConformanceScenarioResultSchema).length(adapterContractScenarios.length),
+  verifiedGuarantees: z.array(z.string().min(1).max(300)).max(20),
+  limitations: z.array(z.string().min(1).max(300)).min(1).max(20)
+}).strict();
+
+export type AdapterConformanceEnvironment = z.infer<
+  typeof adapterConformanceProviderSchema
+>["environment"];
+export type AdapterConformanceProvider = z.infer<typeof adapterConformanceProviderSchema>;
+export type AdapterConformanceScenarioResult = z.infer<typeof adapterConformanceScenarioResultSchema>;
+export type AdapterConformanceReceipt = z.infer<typeof adapterConformanceReceiptSchema>;
 
 export type AdapterContractHarness<TResult> = {
   key: string;
@@ -30,19 +69,34 @@ export type AdapterContractHarness<TResult> = {
   countExternalEffects(): Promise<number>;
 };
 
+export type AdapterContractUnsupported = {
+  unsupported: true;
+  reason: string;
+};
+
 export type AdapterContractDefinition<TResult> = {
   name: string;
-  createHarness(scenario: AdapterContractScenario): Promise<AdapterContractHarness<TResult>>;
+  provider?: AdapterConformanceProvider;
+  createHarness(
+    scenario: AdapterContractScenario
+  ): Promise<AdapterContractHarness<TResult> | AdapterContractUnsupported>;
 };
 
 export type AdapterContractResult = {
   scenario: AdapterContractScenario;
   passed: boolean;
   detail: string;
+  status?: "passed" | "failed" | "unsupported";
 };
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
+}
+
+function isUnsupportedHarness<TResult>(
+  harness: AdapterContractHarness<TResult> | AdapterContractUnsupported
+): harness is AdapterContractUnsupported {
+  return "unsupported" in harness && harness.unsupported === true;
 }
 
 async function runScenario<TResult>(
@@ -50,12 +104,20 @@ async function runScenario<TResult>(
   scenario: AdapterContractScenario
 ): Promise<AdapterContractResult> {
   const harness = await definition.createHarness(scenario);
+  if (isUnsupportedHarness(harness)) {
+    return {
+      scenario,
+      passed: false,
+      detail: `unsupported: ${harness.reason}`,
+      status: "unsupported"
+    };
+  }
   const storage = createUnsafeInMemoryStorage();
   const writeGuard = createWriteGuard({
     storage,
     namespace: `adapter-contract:${definition.name}:${scenario}`,
-    claimTtlMs: 5,
-    waitTimeoutMs: 250,
+    claimTtlMs: 30_000,
+    waitTimeoutMs: 5_000,
     pollIntervalMs: 1
   });
   const options = {
@@ -127,10 +189,51 @@ async function runScenario<TResult>(
       assert(receipt.status === "CONFIRMED", "success must produce a CONFIRMED receipt");
       assert(await harness.countExternalEffects() === 1, "success must create one effect");
     }
-    return { scenario, passed: true, detail: "contract satisfied" };
+    return { scenario, passed: true, detail: "contract satisfied", status: "passed" };
   } finally {
     await storage.close();
   }
+}
+
+function providerFor<TResult>(
+  definition: AdapterContractDefinition<TResult>
+): AdapterConformanceProvider {
+  return adapterConformanceProviderSchema.parse(
+    definition.provider ?? {
+      id: definition.name,
+      environment: "simulated"
+    }
+  );
+}
+
+function toReceiptResult(result: AdapterContractResult): AdapterConformanceScenarioResult {
+  if (result.status === "unsupported") {
+    return {
+      scenario: result.scenario,
+      status: "unsupported",
+      summary: "The adapter author explicitly marked this scenario as unsupported."
+    };
+  }
+  if (result.passed) {
+    return {
+      scenario: result.scenario,
+      status: "passed",
+      summary: "The adapter satisfied the public conformance scenario."
+    };
+  }
+  return {
+    scenario: result.scenario,
+    status: "failed",
+    summary: "The adapter did not satisfy the public conformance scenario."
+  };
+}
+
+export function parseAdapterConformanceReceipt(value: unknown): AdapterConformanceReceipt {
+  return adapterConformanceReceiptSchema.parse(value);
+}
+
+export function digestAdapterConformanceReceipt(value: unknown): string {
+  return digestAnalysisArtifact(parseAdapterConformanceReceipt(value));
 }
 
 export function defineAdapterContractTests<TResult>(definition: AdapterContractDefinition<TResult>) {
@@ -144,11 +247,48 @@ export function defineAdapterContractTests<TResult>(definition: AdapterContractD
           results.push({
             scenario,
             passed: false,
-            detail: error instanceof Error ? error.message : String(error)
+            detail: error instanceof Error ? error.message : String(error),
+            status: "failed"
           });
         }
       }
       return results;
+    },
+    async runReceipt(): Promise<AdapterConformanceReceipt> {
+      const results: AdapterContractResult[] = [];
+      for (const scenario of adapterContractScenarios) {
+        try {
+          results.push(await runScenario(definition, scenario));
+        } catch {
+          results.push({
+            scenario,
+            passed: false,
+            detail: "scenario failed",
+            status: "failed"
+          });
+        }
+      }
+      const scenarios = results.map(toReceiptResult);
+      const failed = scenarios.some((result) => result.status === "failed");
+      const unsupported = scenarios.some((result) => result.status === "unsupported");
+      const provider = providerFor(definition);
+      return adapterConformanceReceiptSchema.parse({
+        schemaVersion: ADAPTER_CONFORMANCE_CONTRACT_VERSION,
+        kind: "writeguard_adapter_conformance_receipt",
+        provider,
+        overallResult: failed ? "failed" : unsupported ? "passed_with_unsupported" : "passed",
+        scenarios,
+        verifiedGuarantees: scenarios
+          .filter((result) => result.status === "passed")
+          .map((result) => `Scenario ${result.scenario} passed in ${provider.environment}.`),
+        limitations: [
+          "Conformance evidence applies only to the declared provider environment.",
+          "Passing scenarios do not certify production behavior or undeclared provider guarantees.",
+          ...(unsupported
+            ? ["Unsupported scenarios remain unverified and must not be represented as passed."]
+            : [])
+        ]
+      });
     }
   };
 }

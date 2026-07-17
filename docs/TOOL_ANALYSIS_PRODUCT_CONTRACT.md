@@ -2,7 +2,11 @@
 
 ## Customer journey
 
-The target journey is one protected action in under ten minutes:
+The target journey is:
+
+`Tool → Analyze → Review → Approve → Generate → Verify → Integrate`
+
+The under-ten-minute external-developer outcome remains a measurement target, not a validated claim:
 
 1. A developer supplies an MCP tool definition.
 2. WriteGuard validates and deterministically normalizes the source.
@@ -10,9 +14,10 @@ The target journey is one protected action in under ten minutes:
 4. The analyzer emits structured recommendations with provenance, confidence, reasoning, and limitations.
 5. The developer reviews, edits, and explicitly approves selected proposals.
 6. The deterministic generator produces a reviewable wrapper and supported failure tests from the approved artifact.
-7. WriteGuard verifies deterministic behavior and the runtime returns ordinary execution receipts.
+7. WriteGuard independently verifies bound artifacts, public compilation, and opt-in simulated failure behavior.
+8. The developer implements and validates the provider integration; runtime execution returns ordinary receipts.
 
-Iteration 3 implements steps 2–6 and generated integration validation for supported failure behavior. Real provider semantics and production integration remain developer work; generated simulations do not prove them.
+Iteration 5 packages the simulated path as `pnpm evaluate:local` and emits receipt-derived evidence. Analysis remains recommendation-only and cannot imply review, approval, generation, verification, or provider correctness. Real-provider semantics and production integration remain developer work; generated simulations do not prove them.
 
 ## Trust and control boundary
 

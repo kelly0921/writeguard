@@ -17,7 +17,7 @@ import {
 import { WriteGuardGeneratorError } from "./errors.js";
 
 export const GENERATOR_ID = "closure.writeguard-generator" as const;
-export const GENERATOR_VERSION = "0.2.0" as const;
+export const GENERATOR_VERSION = "0.3.0" as const;
 export const GENERATOR_TEMPLATE_VERSION = "writeguard.typescript-wrapper/v2" as const;
 export const GENERATION_MANIFEST_VERSION = "writeguard.generation-manifest/v1" as const;
 export const VERIFICATION_BUNDLE_VERSION = "writeguard.verification-bundle/v1" as const;
@@ -511,7 +511,7 @@ function createBaseArtifacts(
       build: "tsc -p tsconfig.json",
       test: "npm run build && node --test dist/test/failure.test.js"
     },
-    dependencies: { "@closure/writeguard": "^0.7.0" },
+    dependencies: { "@closure/writeguard": "^0.8.0" },
     devDependencies: { "@types/node": "^24.0.0", typescript: "^5.8.0" }
   };
   const tsconfig = {

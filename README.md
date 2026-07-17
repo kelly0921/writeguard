@@ -2,9 +2,28 @@
 
 WriteGuard is a small TypeScript execution guard for consequential external writes. It proves one narrow thesis: when an external action succeeds but the caller loses the acknowledgement, a retry should reconcile the uncertain result before it considers executing the action again.
 
-This repository is prepared for external sandbox pilot operations, not a production payment system or a general agent framework. **Sandbox and design-partner evaluation only; not production-certified.** Two clean external-consumer simulated-provider fixtures pass; real external-developer pilot results recorded so far: zero.
+This repository is an evaluation release candidate, not a production payment system or a general agent framework. **Sandbox and external evaluation only; not production-certified.** Real external-developer results recorded so far: zero.
 
-OpenAI Build Week starts from the local 0.3.0 baseline, checkpoints Iterations 1 and 2 at unreleased 0.4.0 and 0.5.0, and advances the working core package to unreleased 0.7.0. Iteration 4 adds independent generated-integration verification without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.0`. Iteration 5 turns the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+
+## Evaluate locally
+
+Requirements: Node.js 20+ and pnpm. No API key, provider credential, Docker, PostgreSQL, or prior WriteGuard knowledge is required.
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm evaluate:local
+```
+
+The validated Windows run takes about 40 seconds after dependencies are available; this is automated command time, not developer onboarding time. Windows 11 is locally validated. The checked CI example targets Windows and Ubuntu, but remote CI has not run; macOS remains unvalidated.
+
+This canonical command installs packed public packages into a clean temporary consumer, then demonstrates:
+
+`Tool → Analyze → Review → Approve → Generate → Verify → Integrate`
+
+The analysis step uses a runtime-validated, deterministic recorded GPT-5.6-compatible fixture and makes no live model call. Approval is separate and explicit. The command compares two unsafe simulated effects with one guarded simulated effect; verifies artifact bindings and controlled compilation; opts into only the manifest-owned generated tests; runs the public six-scenario adapter conformance kit; applies a versioned receipt policy; and renders one summary derived from the receipts.
+
+The resulting sanitized artifacts are written under `.writeguard/evaluation-*`. The summary clearly labels the provider as simulated and real-provider semantics as `not_run`. It does not prove production behavior, provider correctness, or the under-ten-minute external-developer outcome. See [the evaluation runbook](docs/EVALUATION_RUNBOOK.md).
 
 ## What the proof demonstrates
 
@@ -40,14 +59,15 @@ WriteGuard owns stable operation identity, PostgreSQL-backed claiming, cross-pro
 - `apps/pilot-sandbox`: validated localhost configuration, fake/Stripe-test workflows, diagnostics, and sanitized export
 - `examples`: copyable shadow and enforced templates that import only the public package
 - `fixtures/package-consumer`: clean project installed from the packed tarball during verification
+- `fixtures/evaluation-release-candidate`: canonical packed-package, zero-credential evaluation consumer
 - `tests`: unit and live-PostgreSQL integration coverage
 - `docs`: research, architecture, failure model, roadmap, and founder findings
 
 The Drizzle schema describes the database, while the correctness-critical claiming path uses explicit parameterized PostgreSQL transactions and `SELECT ... FOR UPDATE`. This keeps the concurrency behavior visible in the MVP.
 
-## Quick start
+## Design-time product journey
 
-Requirements: Node.js 20+, pnpm, and Docker Desktop or another reachable PostgreSQL instance.
+The canonical evaluator above is the recommended first experience. The lower-level commands below are for developers adapting their own tool.
 
 Normalize an MCP tool definition without a model or network call:
 
@@ -103,7 +123,7 @@ pnpm writeguard verify generated/refund --provider-file provider/simulated.ts --
 
 Static verification validates paths, symlinks, sizes, inventory, digests, the complete source/analysis/review/generator binding bundle, import and secret policy, provider-boundary shape, and TypeScript compilation with verifier-controlled arguments. It does not load target TypeScript plugins or package scripts. `--run-tests` is an explicit code-execution boundary with time/output limits and a minimized environment, but it is not a security sandbox. Every receipt keeps real-provider semantics `not_run` unless a separate real-provider conformance workflow genuinely ran. Hashes prove integrity and binding, not authenticity.
 
-For the one-command Milestone 4 sandbox, use the [pilot quickstart](docs/PILOT_QUICKSTART.md):
+For the PostgreSQL-backed Milestone 4 sandbox, use the [pilot quickstart](docs/PILOT_QUICKSTART.md):
 
 ```powershell
 pnpm install --frozen-lockfile
@@ -129,7 +149,7 @@ pnpm demo:agent
 pnpm demo:support-refund
 pnpm package:verify
 pnpm demo:starter
-pnpm demo:public
+pnpm evaluate:local
 pnpm validate:design-partner
 ```
 
@@ -139,7 +159,7 @@ The ordinary retry demo intentionally creates two fake refunds after two ambiguo
 
 ## Installable package
 
-Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.7.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.2.0` only for `generate` and `verify`.
+Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.8.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.3.0` only for `generate`, `verify`, and receipt-policy evaluation.
 
 ```ts
 import {
@@ -231,9 +251,13 @@ Use the exact operation key printed by the demo and the same `WRITEGUARD_NAMESPA
 
 Only a Stripe test secret is accepted. Never put a live key in this repository.
 
+Use a freshly rotated Stripe test secret only, read without echoing it:
+
 ```powershell
-$env:STRIPE_SECRET_KEY = "sk_test_..."
+$secureKey = Read-Host "Fresh Stripe test secret" -AsSecureString
+$env:STRIPE_SECRET_KEY = [Net.NetworkCredential]::new("", $secureKey).Password
 pnpm demo:stripe
+Remove-Item Env:STRIPE_SECRET_KEY
 ```
 
 The command creates or reuses a sufficiently funded test PaymentIntent. It first creates two unsafe partial refunds using distinct Stripe idempotency keys derived from `call_A` and `call_B`. It then runs the guarded path: the WriteGuard operation ID becomes Stripe metadata and the provider key, local confirmation is lost, and a second worker reconciles exactly one guarded refund.

@@ -28,6 +28,8 @@ The deterministic receipt payload contains verifier identity, mode, input digest
 
 Receipts are suitable for JSON CLI output, CI policy checks, a future UI, or a hosted service. Consumers must validate the contract before trusting its shape and must interpret `passed_with_limitations`, `not_run`, and `not_applicable` explicitly.
 
+`writeguard.verification-policy/v1` can evaluate named receipt dimensions for CI without rerunning verification. The resulting `writeguard.verification-policy-evaluation/v1` artifact preserves the source receipt digest, each requirement and evidence identifier, limitations, and next actions. It does not treat a limited receipt as an unconditional pass and cannot replace missing real-provider evidence. See `docs/VERIFICATION_POLICY.md`.
+
 For `writeguard verify`, exit code `0` means the command emitted a valid receipt whose overall result is `passed` or `passed_with_limitations`. Exit code `6` means a required verification check failed or the verifier could not produce a valid receipt. Fatal parsing and operational failures are written to stderr and do not emit partial JSON to stdout.
 
 ## Verification modes

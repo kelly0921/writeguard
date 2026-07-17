@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - Unreleased
+
+- Added runtime-validated verification-policy and policy-evaluation contracts with deterministic digests and named CI evidence.
+- Added local-evaluation report validation, digesting, and deterministic receipt-derived Markdown rendering.
+- Added granular no-OpenAI-runtime and no-credential-pattern verification checks for policy consumption.
+- Updated generated consumers to the unreleased `@closure/writeguard` 0.8 line.
+
 ## 0.2.0 - Unreleased
 
 - Added writeguard.verification/v1 runtime-validated receipts and deterministic receipt digests.

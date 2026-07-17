@@ -4,7 +4,7 @@
 
 Build Week work began on July 16, 2026. The submission period runs from July 13 through July 21, 2026 at 5:00 PM PT / 8:00 PM ET.
 
-The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased 0.4.0 and 0.5.0 Iteration checkpoints and advances the additive working line to 0.7.0 for Iteration 4.
+The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased Iteration checkpoints and advances the additive working line to `@closure/writeguard@0.8.0` and `@closure/writeguard-generator@0.3.0` for the Iteration 5 evaluation release candidate.
 
 On July 16, 2026, `npm view @closure/writeguard@0.3.0 --json` queried the configured public registry (`https://registry.npmjs.org/`) and returned `E404 Not Found`. Publication timestamp, registry integrity, shasum, and dist metadata were therefore unavailable and are not fabricated here. The artifact may be unpublished, private, differently scoped, or inaccessible without registry authorization; none of those possibilities is claimed as fact. Until independently verifiable registry metadata is supplied, documentation must call 0.3.0 a pre-Build Week local package baseline—not a verified public npm release.
 
@@ -69,6 +69,16 @@ Build Week must reduce integration distance while preserving deterministic enfor
 - Added refund and email clean consumers installed from packed public packages, with distinct identities, simulated providers, receipts, and pilot-specific tests.
 - Measured automated fixture execution separately from still-pending maintainer and external-developer onboarding measurements.
 
+### Iteration 5 — July 17: evaluation release candidate
+
+- Consolidate the first experience into `pnpm evaluate:local`; retain `demo:public` only as a compatibility alias.
+- Install packed public packages into a clean temporary consumer and require no credentials, PostgreSQL, or Docker.
+- Produce a versioned `writeguard.local-evaluation/v1` report and derive the human summary from validated receipts.
+- Add `writeguard.verification-policy/v1` and policy-evaluation receipts with named requirements and exit code 7.
+- Extend the public six-scenario adapter kit with deterministic, sanitized conformance receipts and explicit `simulated`, `test_mode`, or `production` evidence labels.
+- Add a locally validated Ubuntu/Windows CI example and external evaluator runbook without claiming remote execution.
+- Preserve the real-provider level as `not_run`; leave Stripe conformance pending without a fresh secure test key.
+
 Later iterations remain conditional on the preceding contract evidence and deadline. Scope may narrow rather than shipping fabricated or unsafe commands.
 
 ## Dated Build Week changelog
@@ -112,6 +122,14 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 - Added tamper, traversal, symlink, case-collision, size, private-import, OpenAI-dependency, secret, timeout, output-limit, environment, and binding coverage.
 - Added packed-package refund and email consumers. Each produces a passed-with-limitations receipt while keeping real-provider semantics not run.
 
+### 2026-07-17 — Iteration 5
+
+- Advanced unreleased `@closure/writeguard` to 0.8.0 and `@closure/writeguard-generator` to 0.3.0; analyzer remains 0.1.1.
+- Added one canonical packed-package evaluation with a recorded GPT-5.6-compatible analysis fixture, explicit approval, deterministic generation, static verification, opt-in tests, simulated integration, and receipt-derived reports.
+- Added runtime-validated verification-policy, policy-evaluation, adapter-conformance, and local-evaluation contracts.
+- Added an honest CI example, external evaluator guide, evidence checklist, and documentation hygiene gate.
+- Recorded the missing repository license as a release blocker instead of selecting one without owner approval.
+
 ## Validation evidence
 
 ### Pre-edit baseline — passed July 16
@@ -134,6 +152,10 @@ The repository suite contains 105 deterministic unit tests plus the unchanged 20
 
 The repository suite contains 145 unit tests plus 20 PostgreSQL/MCP/concurrency/pilot integration tests: 165 repository tests. Five unique generated failure scenarios and six pilot-specific external-consumer tests also pass. Both clean pilots install packed packages, produce valid verification receipts, and make zero OpenAI calls. Automated execution timing is measured separately; maintainer clean-room and external-developer onboarding measurements remain pending. Full evidence is recorded in `docs/BUILD_WEEK_ITERATION_4_VALIDATION.md`.
 
+### Iteration 5 validation
+
+The planned final suite contains 171 deterministic unit tests plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 191 repository tests. The canonical evaluation separately executes five manifest-owned generated failure scenarios and six public adapter-conformance scenarios from packed public packages. Automated runtime is reported but is not onboarding evidence. Final gate results are recorded in `docs/BUILD_WEEK_ITERATION_5_VALIDATION.md`; Stripe test-mode conformance, external-developer timing, remote CI, and public submission remain pending.
+
 ## Known limitations
 
 - GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; the bounded live gate passed but cannot establish universal classification quality.
@@ -145,5 +167,6 @@ The repository suite contains 145 unit tests plus 20 PostgreSQL/MCP/concurrency/
 - Digests establish integrity and binding but not authenticity or trust in the original tool, analysis, or review.
 - Generated simulations prove supported WriteGuard integration behavior only; real provider reconciliation, consistency, verification, and production storage require developer implementation and validation.
 - No external developer has yet measured the under-ten-minute journey.
+- The repository has no owner-approved license; public distribution remains blocked until that decision is made.
 - Local Build Week history begins at the Iteration 1 checkpoint; no commit or tag has been pushed, and no package has been published or deployed.
 - Existing execution guarantees still depend on correct application identity, reconciliation, verification, and durable storage.

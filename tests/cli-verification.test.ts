@@ -1,5 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
 import { runWriteGuardCli, type WriteGuardCliIo } from "../packages/writeguard/src/cli-program.js";
+
+const roots: string[] = [];
+
+afterEach(async () => {
+  await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
+});
 
 function capture(): {
   io: WriteGuardCliIo;
@@ -114,6 +123,78 @@ describe("writeguard verify CLI", () => {
   ])("rejects invalid arguments without partial JSON", async (args, expected) => {
     const captured = capture();
     expect(await runWriteGuardCli(args, captured.io)).toBe(6);
+    expect(captured.output().stdout).toBe("");
+    expect(captured.output().stderr).toContain(expected);
+  });
+});
+
+describe("writeguard policy CLI", () => {
+  async function artifacts(): Promise<{ receipt: string; policy: string }> {
+    const root = await mkdtemp(join(tmpdir(), "writeguard-policy-cli-"));
+    roots.push(root);
+    const receipt = join(root, "receipt.json");
+    const policy = join(root, "policy.json");
+    await writeFile(receipt, JSON.stringify({
+      receipt: { overallResult: "passed_with_limitations" }
+    }));
+    await writeFile(policy, JSON.stringify({
+      name: "evaluation-release-candidate"
+    }));
+    return { receipt, policy };
+  }
+
+  it("emits JSON and exits zero when named receipt requirements pass", async () => {
+    const paths = await artifacts();
+    const captured = capture();
+    let received: unknown;
+    const exit = await runWriteGuardCli(
+      ["policy", "check", paths.receipt, "--policy", paths.policy, "--pretty"],
+      captured.io,
+      {
+        evaluatePolicy: async (options) => {
+          received = options;
+          return { overallResult: "passed", requirements: [] } as any;
+        }
+      }
+    );
+    expect(exit).toBe(0);
+    expect(received).toEqual({
+      receipt: { receipt: { overallResult: "passed_with_limitations" } },
+      policy: { name: "evaluation-release-candidate" }
+    });
+    expect(JSON.parse(captured.output().stdout)).toMatchObject({
+      overallResult: "passed"
+    });
+    expect(captured.output().stderr).toBe("");
+  });
+
+  it("uses distinct exit code 7 when policy requirements are unmet", async () => {
+    const paths = await artifacts();
+    const captured = capture();
+    const exit = await runWriteGuardCli(
+      ["policy", "check", paths.receipt, "--policy", paths.policy],
+      captured.io,
+      {
+        evaluatePolicy: () => ({
+          overallResult: "failed",
+          requirements: [{ id: "provider.real_semantics", status: "unsatisfied" }]
+        } as any)
+      }
+    );
+    expect(exit).toBe(7);
+    expect(JSON.parse(captured.output().stdout)).toMatchObject({
+      overallResult: "failed"
+    });
+  });
+
+  it.each([
+    [["policy"], "requires the check subcommand"],
+    [["policy", "check"], "requires a verification receipt"],
+    [["policy", "check", "receipt.json"], "requires --policy"],
+    [["policy", "inspect", "receipt.json", "--policy", "policy.json"], "requires the check subcommand"]
+  ])("rejects invalid policy arguments without partial JSON", async (args, expected) => {
+    const captured = capture();
+    expect(await runWriteGuardCli(args, captured.io)).toBe(7);
     expect(captured.output().stdout).toBe("");
     expect(captured.output().stderr).toContain(expected);
   });

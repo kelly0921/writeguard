@@ -23,7 +23,8 @@
     "demo:agent": "tsx apps/agent-demo/src/cli.ts",
     "demo:support-refund": "tsx apps/support-refund/src/cli.ts",
     "demo:starter": "tsx apps/design-partner-starter/src/cli.ts",
-    "demo:public": "node scripts/public-demo.mjs",
+    "evaluate:local": "node scripts/evaluate-local.mjs",
+    "demo:public": "pnpm evaluate:local",
     "package:verify": "node scripts/verify-package.mjs",
     "package:verify-openai-analyzer": "node scripts/verify-openai-analyzer-package.mjs",
     "package:verify-generator": "node scripts/verify-generator-package.mjs",
@@ -54,6 +55,9 @@
     "validate:build-week-iteration-2": "node scripts/validate-build-week-iteration-2.mjs",
     "validate:build-week-iteration-3": "node scripts/validate-build-week-iteration-3.mjs",
     "validate:build-week-iteration-4": "node scripts/validate-build-week-iteration-4.mjs",
+    "validate:build-week-iteration-5": "node scripts/validate-build-week-iteration-5.mjs",
+    "validate:evaluation-ci": "node scripts/validate-evaluation-ci.mjs",
+    "docs:scan": "node scripts/scan-documentation-paths.mjs",
     "inspect": "tsx apps/refund-demo/src/cli.ts inspect"
   },
   "devDependencies": {

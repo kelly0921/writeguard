@@ -884,6 +884,20 @@ export async function verifyGeneratedIntegration(
         summary: "Generated files contain no unresolved markers, secrets, private imports, or OpenAI dependencies.",
         diagnostics: []
       },
+      {
+        id: "artifact.openai_runtime_dependency",
+        level: "artifact_integrity",
+        status: "passed",
+        summary: "Generated source and package metadata contain no OpenAI runtime dependency.",
+        diagnostics: []
+      },
+      {
+        id: "artifact.secret_patterns",
+        level: "artifact_integrity",
+        status: "passed",
+        summary: "Generated output contains no recognized credential-shaped value.",
+        diagnostics: []
+      },
       extraCheck,
       compilationCheck,
       providerCheck,

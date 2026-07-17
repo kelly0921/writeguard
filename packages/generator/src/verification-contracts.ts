@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const VERIFICATION_CONTRACT_VERSION = "writeguard.verification/v1" as const;
 export const VERIFIER_ID = "closure.writeguard-generator-verifier" as const;
-export const VERIFIER_VERSION = "0.2.0" as const;
+export const VERIFIER_VERSION = "0.3.0" as const;
 
 export const verificationStatuses = [
   "passed",

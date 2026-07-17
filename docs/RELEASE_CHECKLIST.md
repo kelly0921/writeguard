@@ -1,58 +1,55 @@
-# Release Checklist
+# Evaluation release checklist
 
-## Current repository state
+## Current state
 
-The repository has no commits and no tags; all project files are currently untracked. `.tmp/`, `.writeguard/`, `.env.pilot`, `node_modules/`, `dist/`, and generated `packages/writeguard/migrations/` are ignored. Do not interpret a successful local validation as a published release.
+Iteration 5 is an unreleased local evaluation candidate. Build Week checkpoints exist through Iteration 4; nothing in the Iteration 5 workflow pushes, publishes, deploys, uploads, or submits.
 
-Before any `git add .`, inspect ignored artifacts and verify no credential file is being forced into the index:
-
-```powershell
-git status --short
-git status --ignored --short .tmp .writeguard .env.pilot node_modules dist packages/writeguard/migrations
-git check-ignore -v .tmp .writeguard .env.pilot packages/writeguard/migrations
-pnpm security:scan
-```
-
-Never use `git add -f` for an environment file, telemetry file, readiness report, package-verification workspace, generated migration copy, or local database artifact.
-
-## Milestone 3 baseline commit and tag
-
-These are the exact owner commands for a saved, clean Milestone 3 snapshot—before Milestone 4 files are present:
+The canonical pre-release gate is:
 
 ```powershell
-pnpm validate:design-partner
-git status --short
-git add .
-git diff --cached --check
-git commit -m "release: WriteGuard Milestone 3 design-partner baseline"
-git tag -a writeguard-v0.3.0 -m "WriteGuard 0.3.0 design-partner baseline"
-git show --stat --oneline writeguard-v0.3.0
-```
-
-Do **not** run those commands on the current Milestone 4 working tree if the intent is a pure Milestone 3 tag. Because no Milestone 3 commit was created before this work began, the owner must either recover that saved snapshot or choose to make the first commit a combined repository baseline. Do not backdate or mislabel a combined commit as a separately preserved Milestone 3 release.
-
-## Milestone 4 readiness
-
-```powershell
-pnpm install --frozen-lockfile
-pnpm validate:pilot-ready
-pnpm audit --prod
+docker compose up -d postgres
+pnpm validate:build-week-iteration-5
+docker compose stop postgres
 git diff --check
 git status --short
 ```
 
-Confirm the readiness output says `externalPilotResults: 0` and `productionCertified: false`. Inspect `.writeguard/pilot-readiness.md`, `.writeguard/tarball-inspection.json`, `.writeguard/writeguard-sbom.cdx.json`, and `.writeguard/pilot-export.json` locally; these generated artifacts remain ignored.
+The gate clears OpenAI and Stripe keys for required commands, reuses only the sanitized historical 9/9 live evaluation report, exercises the complete inherited PostgreSQL regression suite, runs the packed zero-credential evaluation, validates the CI example and docs, and finishes with a secret scan. PostgreSQL started solely for validation must be stopped afterward.
 
-## Owner-controlled publication
+## Evidence review
 
-Only after reviewing the entire first-commit scope:
+Before a local checkpoint:
+
+```powershell
+pnpm security:scan
+git status --short
+git diff --check
+git diff --stat
+```
+
+Review `.writeguard/build-week-iteration-5.json`, `.writeguard/evaluation-report.json`, `.writeguard/evaluation-summary.md`, `docs/BUILD_WEEK_ITERATION_5_VALIDATION.md`, and `docs/BUILD_WEEK_SUBMISSION_EVIDENCE.md`.
+
+Generated `.writeguard` artifacts remain ignored. Never force-add environment files, credentials, local reports, package-verification workspaces, telemetry, or database artifacts.
+
+## Mandatory owner decisions before public release
+
+- Choose and approve a repository/package license. No license file currently exists; public distribution is blocked until this is resolved.
+- Review remote repository and npm registry destinations.
+- Decide whether the package names and pre-1.0 version line are final.
+- Obtain remote Ubuntu/Windows CI evidence after pushing.
+- Record at least one unassisted external-developer evaluation and timing.
+- Decide whether optional current Stripe test-mode conformance is required for the release claim.
+- Review submission copy, media, privacy statements, and all externally visible evidence.
+
+## Local Iteration 5 checkpoint
+
+Only after the complete gate passes:
 
 ```powershell
 git add .
 git diff --cached --check
-git diff --cached --stat
-git commit -m "feat: prepare WriteGuard external pilot operations"
-git tag -a writeguard-pilot-ops-v0.4.0 -m "WriteGuard Milestone 4 pilot operations"
+git commit -m "build-week(iteration-5): prepare evaluation release candidate"
+git tag -a build-week-iteration-5 -m "WriteGuard OpenAI Build Week Iteration 5"
 ```
 
-Pushing a branch, tag, package, or CI workflow is a separate human action. Verify the remote and package registry destination before publishing. No command in the local readiness gate publishes or uploads anything.
+Pushing the commit/tag, publishing packages, deploying software, opening a pull request, uploading assets, and submitting to Build Week are separate owner-controlled actions and are not authorized by this checklist.

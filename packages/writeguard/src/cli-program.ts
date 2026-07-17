@@ -48,10 +48,13 @@ const usage = [
   "    --review <approved-review.json> --out-dir <new-directory> [--pretty]",
   "  writeguard verify <generated-directory> [--provider-file <relative-path>]",
   "    [--strict] [--run-tests] [--timeout-ms <milliseconds>] [--pretty]",
+  "  writeguard policy check <verification-receipt.json>",
+  "    --policy <verification-policy.json> [--pretty]",
   "",
   "analyze requires @closure/writeguard-analyzer-openai and OPENAI_API_KEY; it uses gpt-5.6.",
   "generate requires the optional @closure/writeguard-generator package and makes no network requests.",
   "verify uses that package for safe static checks; --run-tests explicitly executes manifest-owned generated code.",
+  "policy check evaluates an existing receipt without rerunning verification; unmet policy exits 7.",
   "review creates an unapproved editable file; approve has no --yes bypass."
 ].join("\n");
 
@@ -188,6 +191,10 @@ type VerifyGeneratedResult = {
   };
 };
 
+type VerificationPolicyEvaluationResult = {
+  overallResult: "passed" | "failed";
+};
+
 export type WriteGuardCliDependencies = {
   loadAnalyzer?: () => Promise<ToolRiskAnalyzer>;
   generateAndPublish?: (options: {
@@ -203,6 +210,10 @@ export type WriteGuardCliDependencies = {
     providerFile?: string;
     timeoutMs?: number;
   }) => Promise<VerifyGeneratedResult>;
+  evaluatePolicy?: (options: {
+    policy: unknown;
+    receipt: unknown;
+  }) => VerificationPolicyEvaluationResult | Promise<VerificationPolicyEvaluationResult>;
   now?: () => string;
 };
 
@@ -301,10 +312,35 @@ async function verifyWithOptionalPackage(options: {
   return (verifier as (value: typeof options) => Promise<VerifyGeneratedResult>)(options);
 }
 
+async function evaluatePolicyWithOptionalPackage(options: {
+  policy: unknown;
+  receipt: unknown;
+}): Promise<VerificationPolicyEvaluationResult> {
+  const packageName = "@closure/writeguard-generator";
+  let loaded: unknown;
+  try {
+    loaded = await import(packageName);
+  } catch (error) {
+    throw new OptionalPackageError(
+      "The policy command requires the optional " + packageName +
+        " package. Install it alongside @closure/writeguard, then retry.",
+      { cause: error }
+    );
+  }
+  const evaluator = (loaded as { evaluateVerificationPolicy?: unknown }).evaluateVerificationPolicy;
+  if (typeof evaluator !== "function") {
+    throw new OptionalPackageError(
+      packageName + " is installed but does not expose a compatible verification-policy API."
+    );
+  }
+  return (evaluator as (value: typeof options) => VerificationPolicyEvaluationResult)(options);
+}
+
 const defaultDependencies = {
   loadAnalyzer: loadOptionalOpenAIAnalyzer,
   generateAndPublish: generateAndPublishWithOptionalPackage,
   verifyGenerated: verifyWithOptionalPackage,
+  evaluatePolicy: evaluatePolicyWithOptionalPackage,
   now: () => new Date().toISOString()
 };
 
@@ -514,6 +550,56 @@ async function runVerify(
   return result.receipt.overallResult === "failed" ? 6 : 0;
 }
 
+function parsePolicyOptions(args: string[]): {
+  receiptPath: string;
+  policyPath: string;
+  pretty: boolean;
+} {
+  if (args[0] !== "check") {
+    throw new Error("policy requires the check subcommand");
+  }
+  let receiptPath: string | undefined;
+  let policyPath: string | undefined;
+  let pretty = false;
+  for (let index = 1; index < args.length; index += 1) {
+    const argument = args[index]!;
+    if (argument === "--pretty") {
+      pretty = true;
+      continue;
+    }
+    if (argument === "--policy") {
+      const value = args[index + 1];
+      if (!value || value.startsWith("--")) throw new Error("--policy requires a value");
+      if (policyPath) throw new Error("policy check: duplicate option --policy");
+      policyPath = value;
+      index += 1;
+      continue;
+    }
+    if (argument.startsWith("--")) throw new Error("policy check: unsupported argument " + argument);
+    if (receiptPath) throw new Error("policy check accepts exactly one verification receipt");
+    receiptPath = argument;
+  }
+  if (!receiptPath) throw new Error("policy check requires a verification receipt");
+  if (!policyPath) throw new Error("policy check requires --policy");
+  return { receiptPath, policyPath, pretty };
+}
+
+async function runPolicy(
+  args: string[],
+  io: WriteGuardCliIo,
+  dependencies: WriteGuardCliDependencies
+): Promise<number> {
+  const options = parsePolicyOptions(args);
+  const receipt = await readJsonArtifact(options.receiptPath, "verification receipt");
+  const policy = await readJsonArtifact(options.policyPath, "verification policy");
+  const result = await (dependencies.evaluatePolicy ?? defaultDependencies.evaluatePolicy)({
+    receipt,
+    policy
+  });
+  writeResult(io, result, options.pretty);
+  return result.overallResult === "passed" ? 0 : 7;
+}
+
 export async function runWriteGuardCli(
   args: string[],
   io: WriteGuardCliIo = defaultIo,
@@ -524,7 +610,7 @@ export async function runWriteGuardCli(
     io.stdout(`${usage}\n`);
     return 0;
   }
-  if (!["normalize-mcp", "analyze", "review", "approve", "generate", "verify"].includes(command)) {
+  if (!["normalize-mcp", "analyze", "review", "approve", "generate", "verify", "policy"].includes(command)) {
     io.stderr(`writeguard: unsupported command ${command}\n\n${usage}\n`);
     return 2;
   }
@@ -535,7 +621,8 @@ export async function runWriteGuardCli(
     if (command === "review") return await runReview(args.slice(1), io);
     if (command === "approve") return await runApprove(args.slice(1), io, dependencies);
     if (command === "generate") return await runGenerate(args.slice(1), io, dependencies);
-    return await runVerify(args.slice(1), io, dependencies);
+    if (command === "verify") return await runVerify(args.slice(1), io, dependencies);
+    return await runPolicy(args.slice(1), io, dependencies);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     io.stderr(`writeguard: ${message}\n`);
@@ -543,6 +630,7 @@ export async function runWriteGuardCli(
     if (command === "analyze") return 4;
     if (["review", "approve", "generate"].includes(command)) return 5;
     if (command === "verify") return 6;
+    if (command === "policy") return 7;
     return 2;
   }
 }

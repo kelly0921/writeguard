@@ -70,4 +70,35 @@ export type {
   VerificationRuntimeMetadata,
   VerifyGeneratedIntegrationOptions
 } from "./verification.js";
+export {
+  VERIFICATION_POLICY_EVALUATION_VERSION,
+  VERIFICATION_POLICY_VERSION,
+  digestVerificationPolicy,
+  digestVerificationPolicyEvaluation,
+  evaluateVerificationPolicy,
+  extractVerificationReceipt,
+  parseVerificationPolicy,
+  parseVerificationPolicyEvaluation,
+  policyEvaluationRequirementSchema,
+  policyRequirementSchema,
+  realProviderPolicyRequirementSchema,
+  receiptLimitationsPolicySchema,
+  verificationPolicyEvaluationSchema,
+  verificationPolicySchema
+} from "./verification-policy.js";
+export type {
+  PolicyEvaluationRequirement,
+  VerificationPolicy,
+  VerificationPolicyEvaluation
+} from "./verification-policy.js";
+export {
+  LOCAL_EVALUATION_REPORT_VERSION,
+  digestLocalEvaluationReport,
+  localEvaluationReportSchema,
+  parseLocalEvaluationReport,
+  renderLocalEvaluationSummary
+} from "./evaluation-report.js";
+export type {
+  LocalEvaluationReport
+} from "./evaluation-report.js";
 export { WriteGuardGeneratorError } from "./errors.js";

@@ -20,7 +20,7 @@ import type { ExecutionReceipt } from "../../core/src/models.js";
 const { Pool } = pg;
 type PoolType = InstanceType<typeof Pool>;
 
-export const WRITEGUARD_VERSION = "0.7.0" as const;
+export const WRITEGUARD_VERSION = "0.8.0" as const;
 
 export type StorageAdapter = "postgresql" | "unsafe-in-memory";
 

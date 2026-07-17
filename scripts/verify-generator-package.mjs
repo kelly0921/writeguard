@@ -42,6 +42,7 @@ const consumerSource = `import {
   normalizeMcpToolDefinition
 } from "@closure/writeguard/analysis";
 import {
+  evaluateVerificationPolicy,
   generateGuardedToolProject,
   generatorDescriptor,
   publishGeneratedProject,
@@ -136,6 +137,26 @@ if (testVerification.receipt.checks.find((check) => check.id === "tests.generate
 if (testVerification.receipt.levels.find((level) => level.level === "real_provider_semantics")?.status !== "not_run") {
   throw new Error("real-provider semantics were overstated");
 }
+const policy = evaluateVerificationPolicy({
+  receipt: testVerification,
+  policy: {
+    schemaVersion: "writeguard.verification-policy/v1",
+    kind: "writeguard_verification_policy",
+    name: "packed-consumer",
+    requirements: {
+      artifactIntegrity: "required",
+      provenanceBindings: "required",
+      controlledCompilation: "required",
+      generatedFailureTests: "required",
+      providerBoundaryComplete: "not_required",
+      noOpenAIRuntimeDependency: "required",
+      noSecretShapedValues: "required",
+      realProviderSemantics: "not_required",
+      receiptLimitations: "allow_declared"
+    }
+  }
+});
+if (policy.overallResult !== "passed") throw new Error("packed receipt policy failed");
 console.log("external generator consumer passed");
 `;
 
@@ -204,6 +225,7 @@ try {
     programmaticVerification: "passed",
     packagedCliVerification: "passed",
     controlledGeneratedTests: "passed",
+    programmaticReceiptPolicy: "passed",
     realProviderSemantics: "not_run",
     openaiProductionDependency: false
   };

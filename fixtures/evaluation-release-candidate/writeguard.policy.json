@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "writeguard.verification-policy/v1",
+  "kind": "writeguard_verification_policy",
+  "name": "evaluation-release-candidate",
+  "requirements": {
+    "artifactIntegrity": "required",
+    "provenanceBindings": "required",
+    "controlledCompilation": "required",
+    "generatedFailureTests": "required",
+    "providerBoundaryComplete": "required",
+    "noOpenAIRuntimeDependency": "required",
+    "noSecretShapedValues": "required",
+    "realProviderSemantics": "not_required",
+    "receiptLimitations": "allow_declared"
+  }
+}

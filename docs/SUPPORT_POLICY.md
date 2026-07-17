@@ -2,7 +2,7 @@
 
 **Sandbox and design-partner evaluation only; not production-certified.**
 
-WriteGuard pilot support is best-effort and limited to the 0.3.x pilot baseline, unreleased 0.4.x–0.7.x Build Week lines, optional analyzer 0.1.x and generator 0.1.x–0.2.x lines, supplied PostgreSQL migrations, starter workflow, fake-provider sandbox, generated templates, verification receipts, and documented Stripe test-mode path. There is no uptime, response-time, data-recovery, compatibility, model-quality, verification-authenticity, or production SLA.
+WriteGuard evaluation support is best-effort and limited to the 0.3.x pilot baseline, unreleased 0.4.x–0.8.x Build Week lines, optional analyzer 0.1.x and generator 0.1.x–0.3.x lines, supplied PostgreSQL migrations, canonical local evaluator, fake-provider sandbox, generated templates, verification/policy/conformance receipts, and documented optional Stripe test-mode path. There is no uptime, response-time, data-recovery, compatibility, model-quality, verification-authenticity, or production SLA.
 
 Use the matching GitHub issue template for sanitized bugs, integration friction, adapter behavior, reconciliation behavior, or documentation gaps. Never include credentials, operation keys, provider payloads, payment details, customer identifiers, raw database rows, or full tool inputs/outputs. Suspected vulnerabilities must follow `SECURITY.md` and must not be filed publicly.
 
