@@ -27,7 +27,7 @@
       "windows-latest",
       "ubuntu-latest"
     ],
-    "remoteCiStatus": "postgresql_passed_evaluation_second_fix_pending",
+    "remoteCiStatus": "postgresql_and_linux_evaluation_passed_windows_fixture_fix_locally_validated",
     "macosStatus": "not_validated"
   },
   "evaluation": {

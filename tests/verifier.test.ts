@@ -23,7 +23,9 @@ afterEach(async () => {
 });
 
 async function generatedDirectory(raw: unknown = refundTool): Promise<string> {
-  const parent = await mkdtemp(join(tmpdir(), "writeguard-verifier-"));
+  const testDirectory = join(process.cwd(), ".tmp", "verifier-tests");
+  await mkdir(testDirectory, { recursive: true });
+  const parent = await mkdtemp(join(testDirectory, "writeguard-verifier-"));
   roots.push(parent);
   await symlink(join(process.cwd(), "node_modules"), join(parent, "node_modules"), "junction");
   const target = join(parent, "generated");
