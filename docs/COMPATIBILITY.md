@@ -4,8 +4,9 @@
 
 | Surface | Validated baseline | Support statement |
 |---|---|---|
-| `@closure/writeguard` | 0.3.0 baseline; 0.4.0 checkpoint; 0.5.0 unreleased | Pilot package plus additive Build Week analysis contract and CLI surface |
-| `@closure/writeguard-analyzer-openai` | 0.1.0 unreleased | Node-only, design-time GPT-5.6 integration; deterministic fake transport validated, live model quality pending |
+| `@closure/writeguard` | 0.3.0 baseline; 0.4.0/0.5.0 checkpoints; 0.6.0 unreleased | Pilot package plus additive Build Week analysis, approval, generation contracts, and CLI surface |
+| `@closure/writeguard-analyzer-openai` | 0.1.1 unreleased | Node-only, design-time GPT-5.6 integration; deterministic transport and 9/9 live fixtures validated |
+| `@closure/writeguard-generator` | 0.1.0 unreleased | Node-only, deterministic design-time TypeScript generation; no OpenAI dependency |
 | OpenAI JavaScript SDK | 6.47.0 | Optional analyzer package only; absent from the core production graph |
 | Node.js | 24.17.0 | Package declares Node >=20; other supported Node majors still require CI evidence |
 | Module system | ESM / NodeNext | CommonJS consumption is not currently validated |

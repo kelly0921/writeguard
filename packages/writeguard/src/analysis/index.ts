@@ -50,3 +50,27 @@ export {
   digestAnalysisArtifact,
   serializeAnalysisArtifact
 } from "./serialization.js";
+export {
+  GenerationContractValidationError,
+  approveGuardGenerationReview,
+  assertGenerationRequestGenerator,
+  createGuardGenerationRequest,
+  createGuardGenerationReviewDraft,
+  deriveAnalysisModelIdentity,
+  developerApprovalAttestation,
+  generationContractVersion,
+  generatorDescriptorSchema,
+  guardGenerationRequestSchema,
+  guardGenerationReviewSchema,
+  modelIdentitySchema,
+  parseGuardGenerationReview,
+  sourceFieldInformation,
+  validateApprovedGuardGenerationReview
+} from "./generation.js";
+export type {
+  FieldInformation,
+  GeneratorDescriptor,
+  GuardGenerationRequest,
+  GuardGenerationReview,
+  ModelIdentity
+} from "./generation.js";

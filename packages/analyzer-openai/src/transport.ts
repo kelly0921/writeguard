@@ -22,6 +22,8 @@ SECURITY BOUNDARY:
 ANALYSIS RULES:
 - Read-only operations have riskLevel none and no candidates or proposals when there is no contrary evidence.
 - Consequential operations identify side-effect categories and duplicate, timeout, concurrency, crash, reconciliation, and verification risks as relevant.
+- For evidence with kind tool_name, copy untrustedToolDefinition.tool.name exactly into reference. Do not use a title, display name, paraphrase, or inferred operation name as a tool_name reference; use another evidence kind when appropriate.
+- When the metadata leaves read-only versus external-write behavior unresolved, do not claim a definite external write: use uncertain_external_effect for any candidate, keep assessment confidence below 0.7, and omit a proposal when the effect or safe guard inputs are not sufficiently supported.
 - Use only real input field paths. When stable identity is missing, use application_supplied with an empty inputFields array and explain the missing information.
 - Prefer manual_review_required or unsupported reconciliation when lookup evidence is absent.
 - Include detected credentials, contact data, payment identifiers, and message content in redaction considerations.

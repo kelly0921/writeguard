@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 - Unreleased Build Week working version (2026-07-16)
+
+- Clarified exact normalized tool-name evidence and conservative ambiguous-operation behavior after live GPT-5.6 evaluation.
+
 ## 0.1.0 - Unreleased Build Week working version (2026-07-16)
 
 - Added the optional GPT-5.6 Responses API implementation of `ToolRiskAnalyzer`.

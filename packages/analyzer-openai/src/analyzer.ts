@@ -24,7 +24,7 @@ import {
   type OpenAIResponsesTransportOptions
 } from "./transport.js";
 
-export const OPENAI_ANALYZER_VERSION = "0.1.0" as const;
+export const OPENAI_ANALYZER_VERSION = "0.1.1" as const;
 export const openAIAnalyzerDescriptor: AnalyzerDescriptor = Object.freeze({
   id: "openai.gpt-5.6",
   version: OPENAI_ANALYZER_VERSION

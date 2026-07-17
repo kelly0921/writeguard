@@ -2,7 +2,7 @@
 
 WriteGuard gives agent-triggered external writes a stable business-operation identity, a durable PostgreSQL claim, explicit `UNKNOWN` handling, reconciliation, verification, and a terminal receipt.
 
-The unreleased 0.5.0 Build Week line exposes deterministic MCP tool normalization and versioned design-time contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis lives in the separate optional `@closure/writeguard-analyzer-openai` package and remains outside the runtime execution path.
+The unreleased 0.6.0 Build Week line exposes deterministic MCP tool normalization plus versioned analysis and generation-approval contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis and deterministic source generation live in separate optional packages and remain outside runtime execution.
 
 ## Install
 
@@ -48,6 +48,16 @@ writeguard analyze ./refund-order.json --pretty
 The command dynamically loads `@closure/writeguard-analyzer-openai` and requires `OPENAI_API_KEY` in the process environment. It emits exactly one validated `RiskAnalysisResult` to stdout. The artifact identifies `openai.gpt-5.6`, remains `recommendation_only`, and contains only proposals marked `requires_developer_approval`. Errors, refusals, incomplete responses, invalid schemas, model mismatches, and unsupported provider claims go to stderr with exit code 4; no partial recommendation is emitted.
 
 `normalize-mcp` remains the deterministic no-network path and does not require the optional package. The OpenAI package sends the complete normalized tool definition to OpenAI, so remove real credentials, personal data, and sensitive examples/defaults first. See the optional package README for timeout, retry, privacy, cost, and prompt-injection limitations.
+
+Create, edit, approve, and generate from separate bound artifacts:
+
+```text
+writeguard review --tool normalized.json --analysis analysis.json --out review.json
+writeguard approve --tool normalized.json --analysis analysis.json --review review.json --reviewer developer-id --out approved.json
+writeguard generate --tool normalized.json --analysis analysis.json --review approved.json --out-dir generated/tool
+```
+
+The review file starts in `draft` state with enforcement and reconciliation-hook acknowledgements false. Approval requires the developer to edit and confirm every relevant decision; there is no `--yes` bypass. Generation requires the optional `@closure/writeguard-generator`, verifies source/analysis/provenance/model/review/generator bindings, and refuses unsupported capabilities or existing output paths. It is deterministic, network-free, and API-key-free.
 
 ## PostgreSQL setup
 
@@ -135,7 +145,7 @@ The JSONL file contains only metric name, timestamp, and optional duration. It h
 - execution, observation, receipt, reconciliation, telemetry, and tool types
 - classified error classes and `isUnknownExecutionOutcome`
 - `@closure/writeguard/testing` adapter conformance helpers
-- `@closure/writeguard/analysis` normalized-tool, analysis, proposal, review, provenance, serialization, and injectable-analyzer contracts
+- `@closure/writeguard/analysis` normalized-tool, analysis, proposal, review, approval-bound generation request, provenance, serialization, and injectable-analyzer contracts
 
 No internal state-machine, SQL-row, fake-provider, or schema module is exported.
 

@@ -66,6 +66,8 @@ try {
     "dist/writeguard/src/analysis/index.js",
     "dist/writeguard/src/analysis/index.d.ts",
     "dist/writeguard/src/analysis/contracts.js",
+    "dist/writeguard/src/analysis/generation.js",
+    "dist/writeguard/src/analysis/generation.d.ts",
     "dist/writeguard/src/cli.js",
     "migrations/0000_initial.sql",
     "migrations/0001_ordered_events.sql",

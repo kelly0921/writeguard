@@ -23,6 +23,8 @@ Remove-Item Env:OPENAI_API_KEY
 
 `pnpm eval:openai-live` runs nine safe fixtures sequentially with zero SDK retries and writes only fixture name, model identity, pass/fail state, and sanitized diagnostic codes to `.writeguard/openai-live-evaluation.json`. It refuses to run without the key and never prints it. The deterministic standard suite uses injected transports and incurs no API spend.
 
+The July 16 Build Week live gate passed all 9/9 fixtures after the 0.1.1 prompt clarified exact normalized tool-name evidence and conservative ambiguous-operation classification. That result is bounded model-quality evidence, not a universal safety guarantee.
+
 The complete normalized tool definition is sent to OpenAI. Remove real credentials, personal data, and sensitive example/default values first. WriteGuard rejects common credential-shaped metadata, but that is not a complete data-loss-prevention system.
 
 The Responses API request uses strict structured output. The model-facing shape excludes provenance, analyzer identity, approval state, and contract version. Trusted code adds those fields, validates the public `writeguard.analysis/v1` contract, verifies input field references and redaction coverage, and rejects unsupported provider guarantees. Recommendations remain `recommendation_only`, shadow-mode proposals requiring developer approval.

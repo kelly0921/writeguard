@@ -4,7 +4,7 @@ WriteGuard is a small TypeScript execution guard for consequential external writ
 
 This repository is prepared for external sandbox pilot operations, not a production payment system or a general agent framework. **Sandbox and design-partner evaluation only; not production-certified.** External pilot results recorded so far: zero.
 
-OpenAI Build Week starts from the local 0.3.0 baseline, checkpoints Iteration 1 at unreleased 0.4.0, and advances the working core package to unreleased 0.5.0. Iteration 2 adds an optional GPT-5.6 design-time analyzer without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+OpenAI Build Week starts from the local 0.3.0 baseline, checkpoints Iterations 1 and 2 at unreleased 0.4.0 and 0.5.0, and advances the working core package to unreleased 0.6.0. Iteration 3 adds explicit approval and deterministic generation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
 
 ## What the proof demonstrates
 
@@ -31,6 +31,7 @@ WriteGuard owns stable operation identity, PostgreSQL-backed claiming, cross-pro
 - `packages/writeguard`: publishable `@closure/writeguard` facade, declarations, migration API, shadow mode, telemetry, and adapter test kit
 - `packages/writeguard/src/analysis`: versioned analysis contracts, MCP normalization, and injectable analyzer boundary
 - `packages/analyzer-openai`: optional GPT-5.6 Responses API analyzer; the only workspace package with an OpenAI SDK dependency
+- `packages/generator`: optional, network-free approval-bound TypeScript wrapper and failure-test generator
 - `packages/stripe-adapter`: Stripe test-mode refund execution, reconciliation, and verification
 - `apps/refund-demo`: CLI comparison and operation timeline
 - `apps/agent-demo`: MCP refund tool with two framework call IDs and one business operation
@@ -66,6 +67,26 @@ Remove-Item Env:OPENAI_API_KEY
 ```
 
 Do not paste keys into chat, source, fixtures, command arguments, logs, or committed `.env` files. `analyze` sends the complete normalized tool definition—including descriptions, schema metadata, examples, and defaults—to OpenAI. Remove real secrets and personal data first. Output is a `recommendation_only` artifact whose analyzer identity is `openai.gpt-5.6`; incomplete, refused, invalid, mismatched, or unsupported results exit nonzero without partial JSON on stdout.
+
+Complete the approval-bound workflow with reviewable files:
+
+```powershell
+pnpm writeguard normalize-mcp fixtures/mcp-tools/refund-order.json --pretty > normalized-tool.json
+pnpm writeguard analyze fixtures/mcp-tools/refund-order.json --pretty > analysis.json
+pnpm writeguard review --tool normalized-tool.json --analysis analysis.json --out review.json --pretty
+
+# Edit review.json. Confirm the selected operation, identity, enforcement transition,
+# reconciliation hook, redaction fields, and generated failure scenarios.
+pnpm writeguard approve --tool normalized-tool.json --analysis analysis.json `
+  --review review.json --reviewer "developer-id" --out approved-review.json --pretty
+
+pnpm writeguard generate --tool normalized-tool.json --analysis analysis.json `
+  --review approved-review.json --out-dir generated/refund --pretty
+```
+
+`review` never approves. The editable draft starts with `enforcementAcknowledged` and `developerSuppliedHookAcknowledged` set to `false`; `approve` exits nonzero until required acknowledgements and any optional/application-supplied identity decisions are explicit. There is no `--yes` bypass. `generate` verifies every source, analysis, provenance, identity, model, review, and generator binding before the optional `@closure/writeguard-generator` package writes a new directory.
+
+Generated output contains typed input, wrapper, provider-boundary, configuration, executable failure tests, README, package metadata, and `writeguard-generation.json` content digests. Generation is byte-deterministic, makes no network request, executes no source or generated code, and never needs an API key. The provider executor, reconciliation, verification, durable production storage, and real provider validation remain developer-supplied.
 
 For the one-command Milestone 4 sandbox, use the [pilot quickstart](docs/PILOT_QUICKSTART.md):
 
@@ -103,7 +124,7 @@ The ordinary retry demo intentionally creates two fake refunds after two ambiguo
 
 ## Installable package
 
-Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.5.0 line preserves `.` and `./testing`, adds `./analysis`, and dynamically loads the separate unreleased `@closure/writeguard-analyzer-openai@0.1.0` package only for `writeguard analyze`.
+Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.6.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.1.0` only for `generate`.
 
 ```ts
 import {
@@ -227,12 +248,13 @@ Operation metadata is redacted by sensitive key/path rules. Request identity is 
 ## Current verification
 
 - TypeScript typecheck and build pass.
-- 72 unit tests pass, including 27 optional-analyzer tests covering the required normal, ambiguous, malformed, adversarial, reliability, and dependency-boundary cases.
+- 105 unit tests pass, including 27 optional-analyzer tests and approval, generation, publication, CLI, determinism, and adversarial security coverage.
 - 20 PostgreSQL/MCP/support/concurrency/shadow/starter/pilot integration tests pass against Docker Compose.
-- 92 total automated tests pass.
+- 125 repository tests pass; five separately generated failure tests also compile and pass.
 - A clean tarball consumer imports the public package, typechecks, reconciles `UNKNOWN`, and creates one external effect.
 - A second clean consumer installs the core and optional analyzer tarballs, typechecks their declarations, runs the public analyzer with an injected fake transport, and verifies packaged CLI missing-key failure without a network call.
-- The core production dependency graph contains no OpenAI SDK. Live GPT-5.6 model-quality evaluation is pending because no `OPENAI_API_KEY` was configured during Iteration 2 validation.
+- A third clean consumer installs the core and generator tarballs, typechecks public declarations, generates and stages an integration, and confirms no OpenAI production dependency.
+- The core and generator production dependency graphs contain no OpenAI SDK. The credential-gated GPT-5.6 model-quality evaluation passed all 9/9 fixtures with a sanitized report.
 - The starter demonstrates unsafe 2, manual 1, and WriteGuard 1 external effect while completing the support case.
 - The fake end-to-end demo produced two refunds under ordinary retry and one under WriteGuard.
 - Stripe test mode remains credential-gated; one founder-run Stripe test-service validation is documented, but no external design partner has validated the integration and it does not cover rate limiting, webhooks, or large refund histories.
@@ -248,6 +270,8 @@ Operation metadata is redacted by sensitive key/path rules. Request identity is 
 - Shadow mode cannot prove whether uncontrolled application code executed without provider reconciliation evidence.
 - PostgreSQL is the only supported durable storage adapter.
 - GPT-5.6 analysis is probabilistic and design-time only. Prompt hierarchy, strict structured output, runtime validation, provenance attachment, safety checks, and adversarial fixtures reduce—but cannot eliminate—prompt-injection and misclassification risk.
-- Wrapper generation, failure-test generation, approval CLI, and verification remain Iteration 3 work; an analysis result cannot become runtime policy by itself.
+- `writeguard verify` remains future work; an analysis result still cannot become runtime policy without a separate digest-bound developer approval.
+- Generated simulated-provider tests do not prove real provider idempotency, reconciliation cardinality, consistency windows, or verification semantics.
+- Deterministic generation supports bounded direct object/array JSON Schemas; recursive references and `oneOf`/`anyOf`/`allOf` are rejected.
 
 Read [the Milestone 4 validation](docs/MILESTONE_4_VALIDATION.md), [pilot quickstart](docs/PILOT_QUICKSTART.md), [runbook](docs/PILOT_RUNBOOK.md), [rollback guide](docs/PILOT_ROLLBACK.md), [success criteria](docs/PILOT_SUCCESS_CRITERIA.md), [compatibility matrix](docs/COMPATIBILITY.md), [the Milestone 3 validation](docs/MILESTONE_3_VALIDATION.md), [integration experience](docs/INTEGRATION_EXPERIENCE.md), [adapter authoring guide](docs/ADAPTER_AUTHORING.md), [design-partner guide](docs/DESIGN_PARTNER_GUIDE.md), [pilot questionnaire](docs/PILOT_QUESTIONNAIRE.md), and [product boundary](docs/PRODUCT_BOUNDARY.md) before using the package beyond a focused sandbox pilot.

@@ -2,7 +2,7 @@
 
 Date: July 16, 2026
 
-Status: **Deterministic Iteration 2 implementation and all available local quality gates complete. Live GPT-5.6 model-quality evaluation pending because `OPENAI_API_KEY` was not configured. Iteration 2 is not represented as fully complete until that live gate passes.**
+Status: **Complete. The deterministic Iteration 2 implementation, local quality gates, and the credential-gated live GPT-5.6 evaluation all passed.**
 
 ## Product outcome
 
@@ -44,7 +44,7 @@ Current official OpenAI developer documentation and the installed SDK types were
 - per-request timeout plus SDK error/status classification;
 - one SDK retry by default, limited to the SDK's transient retry categories, configurable down to zero.
 
-The official documentation, installed 6.47.0 types, generated strict JSON Schema, and deterministic mocked Responses call agreed on these parameter names and shapes. No documentation/type discrepancy required a workaround. The configured account could not be runtime-verified because no OpenAI key was present.
+The official documentation, installed 6.47.0 types, generated strict JSON Schema, and deterministic mocked Responses call agreed on these parameter names and shapes. No documentation/type discrepancy required a workaround. Account-level runtime verification was deferred at the Iteration 2 checkpoint and completed before Iteration 3 implementation, as recorded in the live-gate section below.
 
 ## Trust, privacy, and failure behavior
 
@@ -106,7 +106,7 @@ Iteration 2 adds 28 unit tests: 27 optional-analyzer tests plus one net-new CLI 
 | `pnpm security:sbom` | Passed; CycloneDX core runtime SBOM generated |
 | `pnpm security:audit` | Passed; no known production dependency vulnerabilities reported |
 | `pnpm security:scan` | Passed; no credential-shaped repository values |
-| `pnpm eval:openai-live` without a key | Correctly refused before any request and printed secure setup guidance; live result remains pending |
+| `pnpm eval:openai-live` | Passed 9/9 live fixtures after a bounded prompt-contract correction; sanitized report contains no raw prompts, responses, or credentials |
 | `pnpm validate:build-week-iteration-2` | Passed in 229.4 seconds after the required local PostgreSQL service was started |
 
 The first aggregate attempt stopped before tests because PostgreSQL port 54327 was not running (`ECONNREFUSED`). Starting the existing Compose `postgres` service resolved the environment prerequisite; the complete rerun passed, and the service was stopped afterward. This was not recorded as a code or test failure.
@@ -117,7 +117,7 @@ No lint script exists, so no lint claim is made.
 
 ## Live GPT-5.6 gate
 
-`OPENAI_API_KEY` was absent. No live OpenAI request was attempted, no API key was requested in chat, and no live model-quality result is claimed.
+The checkpoint-time validation ran without `OPENAI_API_KEY`, but the credential-gated live gate was completed on July 16 before Iteration 3 implementation. The key was entered only into the founder's PowerShell process, removed afterward, and was never written to the repository or report.
 
 Secure PowerShell setup and the exact command:
 
@@ -128,7 +128,21 @@ pnpm eval:openai-live
 Remove-Item Env:OPENAI_API_KEY
 ```
 
-The live command runs nine safe fixtures sequentially with zero retries and writes a sanitized `.writeguard/openai-live-evaluation.json` containing model identity, fixture name, pass/fail state, and diagnostic codes only. A passing live report is required before describing Iteration 2 as fully complete.
+The first diagnostic run passed the read-only fixture but exposed two genuine prompt-contract gaps: consequential cases used a display/paraphrased tool name for `tool_name` evidence, which trusted code correctly rejected as `provenance_mismatch`, and the ambiguous fixture was too definite. The smallest layer was corrected by requiring the exact normalized `tool.name` evidence value and conservative `uncertain_external_effect` behavior below 0.7 confidence. Provenance enforcement and evaluation expectations were not weakened.
+
+After the prompt-only correction, all 72 deterministic unit tests and typechecking passed. The second live run then passed all 9/9 fixtures with `gpt-5.6`, `openai@6.47.0`, zero SDK retries, and no raw prompt/response storage:
+
+- read-only lookup;
+- consequential refund;
+- consequential email;
+- missing identity;
+- unsupported reconciliation;
+- ambiguous operation;
+- description prompt injection;
+- nested-schema prompt injection;
+- sensitive-field coverage.
+
+The sanitized `.writeguard/openai-live-evaluation.json` records only model identity, timestamps, fixture names, pass/fail state, and diagnostic codes. It contains no key, raw prompt, raw response, or full tool input. Live observations establish model-quality evidence for these fixtures; they are not deterministic runtime guarantees.
 
 ## Files and documentation
 
@@ -141,7 +155,7 @@ The live command runs nine safe fixtures sequentially with zero retries and writ
 
 ## Known limitations
 
-- Live GPT-5.6 classification quality is unverified for the configured account.
+- Live GPT-5.6 classification quality passed the bounded nine-fixture gate; broader domains remain unverified and probabilistic.
 - Analysis is probabilistic and cannot guarantee safety or complete prompt-injection resistance.
 - Input remains one direct MCP tool definition; no live MCP server or OpenAPI ingestion is included.
 - The 128 KiB normalized-input limit bounds cost exposure but is not token estimation.
@@ -152,7 +166,7 @@ The live command runs nine safe fixtures sequentially with zero retries and writ
 
 ## Iteration 3 recommendation
 
-First run and pass `pnpm eval:openai-live` with an authorized project that can access `gpt-5.6`, triage any fixture-quality failures without weakening provenance or capability checks, and record the sanitized report. Then implement a separate generator that accepts only a schema-valid analysis plus an explicit digest-bound approved `DeveloperReview`. Generate reviewable TypeScript wrapper and failure-test artifacts for one provider-hook fixture; never infer approval, provider idempotency, lookup semantics, or verification behavior. The generated suite should prove duplicate suppression, timeout-after-submission reconciliation, concurrent invocation safety, crash-after-effect recovery, ambiguous reconciliation review, and redaction before adding `writeguard generate`.
+With the live gate complete, Iteration 3 may implement a separate generator that accepts only a schema-valid analysis plus an explicit digest-bound approved developer review. It must never infer approval, provider idempotency, lookup semantics, or verification behavior. The generated suite should prove duplicate suppression, timeout-after-submission reconciliation, concurrent invocation safety, crash-after-effect recovery, delayed reconciliation, and redaction before adding `writeguard generate`.
 
 ## Repository actions
 

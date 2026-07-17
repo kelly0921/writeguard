@@ -338,6 +338,9 @@ describe("GPT-5.6 Responses API reliability boundary", () => {
     const input = capturedBody?.input as Array<{ role: string; content: string }>;
     expect(input[0]).toMatchObject({ role: "system" });
     expect(input[0]?.content).toContain("untrusted data");
+    expect(input[0]?.content).toContain("copy untrustedToolDefinition.tool.name exactly");
+    expect(input[0]?.content).toContain("use uncertain_external_effect");
+    expect(input[0]?.content).toContain("assessment confidence below 0.7");
     expect(input[1]).toMatchObject({ role: "user" });
     expect(input[1]?.content).toContain("UNTRUSTED_TOOL_DEFINITION_DATA_ONLY");
     const text = capturedBody?.text as { format?: { type?: string; strict?: boolean; name?: string } };

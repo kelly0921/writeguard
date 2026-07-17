@@ -9,10 +9,10 @@ The target journey is one protected action in under ten minutes:
 3. An explicitly configured analyzer evaluates possible consequential external effects.
 4. The analyzer emits structured recommendations with provenance, confidence, reasoning, and limitations.
 5. The developer reviews, edits, and explicitly approves selected proposals.
-6. A later generator produces a reviewable wrapper and failure tests from the approved artifact.
+6. The deterministic generator produces a reviewable wrapper and supported failure tests from the approved artifact.
 7. WriteGuard verifies deterministic behavior and the runtime returns ordinary execution receipts.
 
-Iteration 2 implements steps 2–4 and the explicit pending-review boundary for step 5. It does not approve a proposal or claim steps 6–7 as a complete product workflow.
+Iteration 3 implements steps 2–6 and generated integration validation for supported failure behavior. Real provider semantics and production integration remain developer work; generated simulations do not prove them.
 
 ## Trust and control boundary
 
@@ -23,13 +23,15 @@ MCP definition
   -> optional GPT-5.6 analyzer (design-time only)
   -> recommendation-only analysis
   -> developer review and approval
-  -> generator/verifier (future)
+  -> deterministic generator
+  -> generated wrapper and simulated-provider failure tests
   -> deterministic WriteGuard runtime
   -> execution receipt
 ```
 
 - GPT-5.6 analyzes and proposes. It does not approve, execute, reconcile, verify, or decide runtime state.
 - The developer reviews and approves. Approval is a separate artifact bound to the analysis digest.
+- Draft review creation does not approve; approval requires a non-secret reviewer identity, timestamp, full selection, and explicit enforcement/provider-hook acknowledgements.
 - WriteGuard enforces deterministically. The execution SDK imports no OpenAI client and requires no model or API key.
 - An analyzer cannot smuggle approval into its response: the analysis schema is strict, has `status: recommendation_only`, and guard proposals have `reviewState: requires_developer_approval`.
 
@@ -41,13 +43,16 @@ Future adapters may normalize OpenAPI operations, framework tool declarations, o
 
 ## Public artifacts
 
-All Build Week artifacts use `schemaVersion: writeguard.analysis/v1` and strict runtime validation.
+Analysis artifacts use `schemaVersion: writeguard.analysis/v1`; approval and generation artifacts use `schemaVersion: writeguard.generation/v1`. Both versions are strict and independently validated.
 
 - `NormalizedToolDefinition`: deterministic source data, full JSON-compatible input schema, annotations, provenance, and sensitive-field hints. `sourceId` is a canonical SHA-256 digest, not a framework call ID.
 - `CandidateConsequentialOperation`: recommendation identifying a possible external-write operation, consequence categories, confidence, reasoning, and evidence references.
 - `RiskAnalysisResult`: recommendation-only artifact with analyzer identity, provenance, assessment, candidates, guard proposals, and limitations.
 - `ProposedGuardConfiguration`: proposed mode, effect type, adapter requirement, operation identity, reconciliation, redaction, and failure scenarios. It always requires approval.
 - `DeveloperReview`: separate artifact bound to the analysis digest. Approval requires reviewer, timestamp, and selected proposal IDs.
+- `GuardGenerationReview`: separate draft/approved artifact bound to normalized source identity and digest, analysis digest/version, analyzer/model identity, selected operation/proposal, operation identity, enforcement transition, reconciliation hook, redaction fields, and supported failure scenarios.
+- `GuardGenerationRequest`: embeds the validated tool, analysis, approved review, and exact generator identity/version. A boolean approval alone cannot satisfy it.
+- `GenerationManifest`: records the generator/template versions, source/analysis/review digests, generated file-content digests, supported/omitted scenarios, integration requirements, and simulation limitations.
 
 ## Provider adapters and reconciliation
 
@@ -59,23 +64,26 @@ Before enforcement, a developer must confirm stable business identity, provider 
 
 The programmatic API is the source of truth. CLI commands serialize the same public artifacts a future UI or hosted experience would consume. No CLI-only state or UI-specific analysis model is permitted.
 
-Iteration 2 implements:
+The implemented CLI is:
 
 ```text
 writeguard normalize-mcp <tool-definition.json|->
 writeguard analyze <tool-definition.json|->
+writeguard review --tool <normalized.json> --analysis <analysis.json> --out <draft.json>
+writeguard approve --tool <normalized.json> --analysis <analysis.json> --review <edited-draft.json> --reviewer <id> --out <approved.json>
+writeguard generate --tool <normalized.json> --analysis <analysis.json> --review <approved.json> --out-dir <new-directory>
 ```
 
-Both commands emit machine-readable JSON by default and support `--pretty`; errors remain on stderr. `normalize-mcp` is no-network. `analyze` dynamically loads `@closure/writeguard-analyzer-openai`, requires `OPENAI_API_KEY`, always targets `gpt-5.6`, and exits 4 without partial stdout when analysis is missing, refused, incomplete, invalid, mismatched, or unsafe. `generate`, `verify`, an approval CLI, and a receipt `report` remain unimplemented. A future UI must use `@closure/writeguard/analysis` rather than a parallel contract.
+Commands emit machine-readable JSON on stdout; errors remain on stderr. `normalize-mcp` is no-network. `analyze` dynamically loads `@closure/writeguard-analyzer-openai`, requires `OPENAI_API_KEY`, always targets `gpt-5.6`, and exits 4 without partial stdout when analysis is missing, refused, incomplete, invalid, mismatched, or unsafe. `review` creates an editable draft with approval acknowledgements false. `approve` has no `--yes` path and exits 5 without output on invalid or incomplete review. `generate` dynamically loads `@closure/writeguard-generator`, validates every binding, makes no network request, and stages a new output directory. `verify` and a receipt `report` command remain unimplemented. A future UI must use these public contracts rather than a parallel model.
 
 ## Versioning and compatibility
 
 - `writeguard.analysis/v1` is independent of the npm package version.
 - Breaking changes require a new contract version and explicit parser/migration path.
 - Unknown versions fail with actionable errors and are never silently coerced.
-- The 0.4.0 checkpoint added `./analysis` and a CLI bin without removing `.` or `./testing`; unreleased 0.5.0 adds the working dynamic `analyze` path.
+- The 0.4.0 checkpoint added `./analysis` and a CLI bin without removing `.` or `./testing`; unreleased 0.5.0 added the dynamic `analyze` path; unreleased 0.6.0 adds generation contracts and review/approve/generate CLI paths.
 - Generated artifacts must record the contract version and source/analysis digest.
-- `@closure/writeguard-analyzer-openai@0.1.0` depends on these public contracts. The deterministic package does not depend on the optional implementation or OpenAI SDK.
+- `@closure/writeguard-analyzer-openai@0.1.1` and `@closure/writeguard-generator@0.1.0` depend only on public contracts. The core does not depend on either optional package or the OpenAI SDK; the generator has no OpenAI dependency.
 
 ## Security, privacy, and redaction
 
@@ -87,6 +95,7 @@ Both commands emit machine-readable JSON by default and support `--pretty`; erro
 - Callers must remove real credentials, personal data, confidential text, and sensitive defaults/examples before analysis. Credential-shape rejection is not complete data-loss prevention.
 - Analyzer errors and sanitized evaluation reports do not include raw prompts, responses, API keys, or full sensitive inputs.
 - Prompts, logs, generated files, and future UI views must preserve WriteGuard's minimal-data and redaction guarantees.
+- Generation never inserts untrusted descriptions into source. Identifiers and literals are sanitized/escaped deterministically; traversal, overwrite, symlink escape, recursive references, excessive schemas, and prototype-pollution-shaped keys fail closed.
 
 ## GPT-5.6 integration and trusted envelope
 
@@ -115,8 +124,8 @@ This does not make a complete prompt-injection immunity claim. Model classificat
 - GPT-5.6 in runtime enforcement;
 - Studio/dashboard, hosted control plane, authentication, billing, workspaces, or enterprise permissions;
 - OpenAPI ingestion;
-- wrapper or failure-test generation in Iteration 2;
-- fabricated `generate`, `verify`, approval, or `report` success;
+- model-generated trusted runtime code;
+- fabricated `verify` or `report` success;
 - multiple new provider integrations;
 - production manual-reconciliation controls;
 - a generic chatbot or workflow engine;

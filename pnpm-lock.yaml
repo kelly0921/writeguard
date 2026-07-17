@@ -14,6 +14,9 @@ importers:
       '@closure/writeguard-analyzer-openai':
         specifier: workspace:*
         version: link:packages/analyzer-openai
+      '@closure/writeguard-generator':
+        specifier: workspace:*
+        version: link:packages/generator
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
@@ -168,6 +171,19 @@ importers:
       zod:
         specifier: ^3.25.0
         version: 3.25.76
+
+  packages/generator:
+    dependencies:
+      '@closure/writeguard':
+        specifier: workspace:^
+        version: link:../writeguard
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.3
+      typescript:
+        specifier: ^5.8.0
+        version: 5.9.3
 
   packages/sdk:
     dependencies:

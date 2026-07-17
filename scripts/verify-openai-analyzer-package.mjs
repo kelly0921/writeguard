@@ -11,6 +11,8 @@ const appDir = join(tempRoot, "app");
 const coreDir = join(root, "packages", "writeguard");
 const analyzerDir = join(root, "packages", "analyzer-openai");
 const fixtureDir = join(root, "fixtures", "analyzer-package-consumer");
+const coreManifest = JSON.parse(await readFile(join(coreDir, "package.json"), "utf8"));
+const analyzerManifest = JSON.parse(await readFile(join(analyzerDir, "package.json"), "utf8"));
 
 function commandLine(command, args) {
   return [command, ...args]
@@ -55,8 +57,10 @@ try {
   await run("pnpm", ["pack", "--pack-destination", artifactDir], coreDir);
   await run("pnpm", ["pack", "--pack-destination", artifactDir], analyzerDir);
   const tarballs = await readdir(artifactDir);
-  const coreTarball = tarballs.find((name) => /^closure-writeguard-0\.5\.0\.tgz$/.test(name));
-  const analyzerTarball = tarballs.find((name) => /^closure-writeguard-analyzer-openai-0\.1\.0\.tgz$/.test(name));
+  const coreTarball = tarballs.find((name) => name === `closure-writeguard-${coreManifest.version}.tgz`);
+  const analyzerTarball = tarballs.find(
+    (name) => name === `closure-writeguard-analyzer-openai-${analyzerManifest.version}.tgz`
+  );
   if (!coreTarball || !analyzerTarball) {
     throw new Error(`Expected core and analyzer tarballs; received ${tarballs.join(", ")}`);
   }
@@ -95,8 +99,8 @@ try {
     throw new Error("Installed optional package does not pin the verified OpenAI SDK version");
   }
   const result = {
-    corePackage: "@closure/writeguard@0.5.0",
-    analyzerPackage: "@closure/writeguard-analyzer-openai@0.1.0",
+    corePackage: `@closure/writeguard@${coreManifest.version}`,
+    analyzerPackage: `@closure/writeguard-analyzer-openai@${analyzerManifest.version}`,
     cleanInstall: "passed",
     generatedDeclarations: "passed",
     publicFakeTransport: "passed",

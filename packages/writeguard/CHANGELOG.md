@@ -2,6 +2,13 @@
 
 This project follows Semantic Versioning.
 
+## 0.6.0 - Unreleased Build Week working version (2026-07-16)
+
+- Added the versioned `writeguard.generation/v1` review, approval, and generation-request contracts.
+- Added digest-bound `writeguard review`, `writeguard approve`, and optional `writeguard generate` CLI workflows.
+- Added explicit enforcement, optional-identity, application-key, reconciliation-hook, redaction, and failure-scenario approval boundaries.
+- Rejects prototype-pollution-shaped MCP metadata before normalization.
+
 ## 0.5.0 - Unreleased Build Week working version (2026-07-16)
 
 - Added the working `writeguard analyze` command, which dynamically loads the optional `@closure/writeguard-analyzer-openai` integration and keeps machine-readable output on stdout.

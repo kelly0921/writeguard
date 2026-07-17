@@ -4,7 +4,7 @@
 
 Build Week work began on July 16, 2026. The submission period runs from July 13 through July 21, 2026 at 5:00 PM PT / 8:00 PM ET.
 
-The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created an unreleased 0.4.0 Iteration 1 checkpoint and advances the additive working line to 0.5.0 for Iteration 2.
+The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased 0.4.0 and 0.5.0 Iteration checkpoints and advances the additive working line to 0.6.0 for Iteration 3.
 
 On July 16, 2026, `npm view @closure/writeguard@0.3.0 --json` queried the configured public registry (`https://registry.npmjs.org/`) and returned `E404 Not Found`. Publication timestamp, registry integrity, shasum, and dist metadata were therefore unavailable and are not fabricated here. The artifact may be unpublished, private, differently scoped, or inaccessible without registry authorization; none of those possibilities is claimed as fact. Until independently verifiable registry metadata is supplied, documentation must call 0.3.0 a pre-Build Week local package baseline—not a verified public npm release.
 
@@ -53,11 +53,13 @@ Build Week must reduce integration distance while preserving deterministic enfor
 - Working `writeguard analyze` with JSON stdout and fail-closed nonzero exits.
 - Explicit credential-gated live evaluation; no generation or runtime model dependency.
 
-### Iteration 3 — planned for July 19: guarded wrapper and failure-test generation
+### Iteration 3 — July 16: approved guarded wrapper and failure-test generation
 
-- Generate reviewable TypeScript wrapper and failure-test artifacts from an approved proposal.
-- Preserve provider-specific adapter hooks rather than inventing provider semantics.
-- Run generated tests for duplicate invocation, timeout-after-submission, reconciliation, concurrency, and crash paths where supported.
+- Added the separate `writeguard.generation/v1` draft/approval/request contract bound to normalized source, source digest, analysis digest, analyzer/model identity, operation, policy, reconciliation, redaction, scenarios, and generator version.
+- Added editable-file `review`, explicit `approve`, and optional network-free `generate` CLI commands with no `--yes` bypass.
+- Added optional `@closure/writeguard-generator@0.1.0` with deterministic wrapper, provider boundary, configuration, failure tests, and content-digested manifest generation.
+- Preserved provider-specific execution, reconciliation, and verification hooks rather than inventing provider semantics.
+- Generated and passed executable tests for duplicate invocation, timeout-after-submission, delayed reconciliation, concurrency, and crash-after-effect paths.
 
 ### Iteration 4 — planned for July 20–21: verification and submission experience
 
@@ -89,7 +91,16 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 - Kept provenance, contract version, analyzer identity, recommendation status, and developer-approval state out of the model-facing schema and attached them in trusted code.
 - Added post-response checks for real input-field references, sensitive-field redaction, provider idempotency evidence, reconciliation evidence, and adapter claims.
 - Added `writeguard analyze`, twelve deterministic evaluation categories, live-evaluation tooling, clean external package verification, and a core dependency-graph gate.
-- Live GPT-5.6 evaluation remains pending because `OPENAI_API_KEY` was not configured; no live-model quality claim is made.
+- Completed the credential-gated live GPT-5.6 evaluation after one prompt-contract correction; all nine fixtures passed without weakening provenance or safety expectations.
+
+### 2026-07-16 — Iteration 3
+
+- Advanced unreleased `@closure/writeguard` to 0.6.0 and the prompt-corrected optional analyzer to 0.1.1.
+- Added `writeguard.generation/v1` approval-bound contracts and explicit developer attestations.
+- Added deterministic `@closure/writeguard-generator@0.1.0` with staged publication and no OpenAI dependency.
+- Added `writeguard review`, `writeguard approve`, and `writeguard generate`.
+- Added protection against unapproved generation, digest/provenance mismatch, optional identity ambiguity, unsupported provider capabilities, source injection, traversal, overwrite, symlink escape, excessive schemas, recursive references, and prototype-pollution-shaped keys.
+- Generated TypeScript compiled and five simulated-provider failure tests passed; clean external tarball installation and public declaration use passed.
 
 ## Validation evidence
 
@@ -103,15 +114,20 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 
 ### Iteration 2 deterministic validation
 
-The deterministic suite now contains 72 unit tests, including 27 optional-analyzer tests, plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 92 total. The standard suite makes no OpenAI network calls. Both packages pack and install into a clean external consumer, declarations typecheck, the public injected transport runs without a key, the packaged CLI fails safely without a key, and the core production dependency graph contains no OpenAI SDK. Full command evidence is recorded in `docs/BUILD_WEEK_ITERATION_2_VALIDATION.md`. Live GPT-5.6 model-quality evaluation is a separate pending gate.
+The Iteration 2 deterministic suite contains 72 unit tests, including 27 optional-analyzer tests, plus 20 PostgreSQL/MCP/concurrency/pilot integration tests. The credential-gated live GPT-5.6 gate subsequently passed 9/9 fixtures. Both packages pack and install into a clean external consumer, declarations typecheck, the public injected transport runs without a key, the packaged CLI fails safely without a key, and the core production dependency graph contains no OpenAI SDK. Full evidence is recorded in `docs/BUILD_WEEK_ITERATION_2_VALIDATION.md`.
+
+### Iteration 3 validation
+
+The repository suite contains 105 deterministic unit tests plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 125 repository tests. Generated artifact validation separately compiles emitted TypeScript and executes five generated failure tests. Determinism, manifest digests, public API imports, zero-OpenAI runtime dependencies, staged publication, clean tarball consumption, and adversarial source/path/schema handling are covered. Full command evidence is recorded in `docs/BUILD_WEEK_ITERATION_3_VALIDATION.md`.
 
 ## Known limitations
 
-- GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; live model-quality evaluation is still pending.
+- GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; the bounded live gate passed but cannot establish universal classification quality.
 - Normalization accepts one MCP-style tool definition, not a full server manifest or live server connection.
 - Sensitive-field detection is a deterministic name/format heuristic and requires developer review.
 - Normalization preserves JSON Schema but does not fully evaluate every JSON Schema dialect or remote reference.
-- Guard generation, failure-test generation, verification, OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
+- `writeguard verify`, OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
+- Generated simulations prove supported WriteGuard integration behavior only; real provider reconciliation, consistency, verification, and production storage require developer implementation and validation.
 - No external developer has yet measured the under-ten-minute journey.
 - Local Build Week history begins at the Iteration 1 checkpoint; no commit or tag has been pushed, and no package has been published or deployed.
 - Existing execution guarantees still depend on correct application identity, reconciliation, verification, and durable storage.

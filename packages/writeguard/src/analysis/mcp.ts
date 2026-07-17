@@ -69,6 +69,25 @@ function containsCredentialShape(value: JsonValue): boolean {
   return false;
 }
 
+function containsUnsafeObjectKey(value: unknown, seen = new WeakSet<object>()): string | null {
+  if (!value || typeof value !== "object") return null;
+  if (seen.has(value)) return null;
+  seen.add(value);
+  if (Array.isArray(value)) {
+    for (const child of value) {
+      const unsafe = containsUnsafeObjectKey(child, seen);
+      if (unsafe) return unsafe;
+    }
+    return null;
+  }
+  for (const key of Object.keys(value)) {
+    if (["__proto__", "prototype", "constructor"].includes(key)) return key;
+    const unsafe = containsUnsafeObjectKey((value as Record<string, unknown>)[key], seen);
+    if (unsafe) return unsafe;
+  }
+  return null;
+}
+
 function schemaObject(value: JsonValue | undefined): JsonObject | null {
   return value && typeof value === "object" && !Array.isArray(value) ? value : null;
 }
@@ -106,6 +125,12 @@ export function normalizeMcpToolDefinition(
   input: unknown,
   provenance: McpNormalizationProvenance = {}
 ): NormalizedToolDefinition {
+  const unsafeKey = containsUnsafeObjectKey(input);
+  if (unsafeKey) {
+    throw new McpToolDefinitionError(
+      `Invalid MCP tool definition: unsafe property name ${unsafeKey} is not allowed`
+    );
+  }
   const parsed = mcpToolDefinitionSchema.safeParse(input);
   if (!parsed.success) {
     throw new McpToolDefinitionError(`Invalid MCP tool definition: ${formatIssues(parsed.error)}`);
