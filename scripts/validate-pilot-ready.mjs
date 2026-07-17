@@ -27,6 +27,15 @@ const enforcedPilotEnvironment = {
 };
 
 const commands = [
+  { name: "public core package build", args: ["--filter", "@closure/writeguard", "build"] },
+  {
+    name: "public analyzer package build",
+    args: ["--filter", "@closure/writeguard-analyzer-openai", "build"]
+  },
+  {
+    name: "public generator package build",
+    args: ["--filter", "@closure/writeguard-generator", "build"]
+  },
   { name: "frozen Milestone 3 validation", args: ["validate:design-partner"] },
   { name: "tarball contents and exports", args: ["package:inspect"] },
   { name: "runtime dependency SBOM", args: ["security:sbom"] },

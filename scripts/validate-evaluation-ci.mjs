@@ -2,14 +2,12 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
-const workflow = await readFile(
-  resolve(root, ".github", "workflows", "evaluation.yml"),
-  "utf8"
-);
-const pilotWorkflow = await readFile(
-  resolve(root, ".github", "workflows", "ci.yml"),
-  "utf8"
-);
+const workflow = (
+  await readFile(resolve(root, ".github", "workflows", "evaluation.yml"), "utf8")
+).replaceAll("\r\n", "\n");
+const pilotWorkflow = (
+  await readFile(resolve(root, ".github", "workflows", "ci.yml"), "utf8")
+).replaceAll("\r\n", "\n");
 
 const required = [
   "permissions:\n  contents: read",
@@ -17,6 +15,9 @@ const required = [
   "ubuntu-latest",
   "windows-latest",
   "pnpm install --frozen-lockfile",
+  "pnpm --filter @closure/writeguard build",
+  "pnpm --filter @closure/writeguard-analyzer-openai build",
+  "pnpm --filter @closure/writeguard-generator build",
   "pnpm typecheck",
   "pnpm build",
   "pnpm test:unit",
@@ -28,7 +29,8 @@ const required = [
   "pnpm docs:scan",
   "pnpm evaluate:local",
   "actions/upload-artifact@v4",
-  ".writeguard/evaluation-*"
+  ".writeguard/evaluation-*",
+  "hashFiles('.writeguard/evaluation-*') != ''"
 ];
 for (const value of required) {
   if (!workflow.includes(value)) {
