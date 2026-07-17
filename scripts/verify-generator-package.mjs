@@ -44,7 +44,8 @@ const consumerSource = `import {
 import {
   generateGuardedToolProject,
   generatorDescriptor,
-  publishGeneratedProject
+  publishGeneratedProject,
+  verifyGeneratedIntegration
 } from "@closure/writeguard-generator";
 
 const raw = {
@@ -124,6 +125,17 @@ const request = createGuardGenerationRequest({ generator: generatorDescriptor, t
 const project = generateGuardedToolProject(request);
 if (!project.files.some((file) => file.path === "src/guarded-tool.ts")) throw new Error("missing wrapper");
 await publishGeneratedProject(project, { outDir: "./generated" });
+const staticVerification = await verifyGeneratedIntegration({ directory: "./generated" });
+if (staticVerification.receipt.overallResult !== "passed_with_limitations") {
+  throw new Error("static verification failed");
+}
+const testVerification = await verifyGeneratedIntegration({ directory: "./generated", runTests: true });
+if (testVerification.receipt.checks.find((check) => check.id === "tests.generated_failure_behavior")?.status !== "passed_with_limitations") {
+  throw new Error("controlled generated test verification failed");
+}
+if (testVerification.receipt.levels.find((level) => level.level === "real_provider_semantics")?.status !== "not_run") {
+  throw new Error("real-provider semantics were overstated");
+}
 console.log("external generator consumer passed");
 `;
 
@@ -166,6 +178,12 @@ try {
     appDir
   );
   await run("node", [join(appDir, "dist", "index.js")], appDir);
+  await run("node", [
+    join(appDir, "node_modules", "@closure", "writeguard", "dist", "writeguard", "src", "cli.js"),
+    "verify",
+    join(appDir, "generated"),
+    "--run-tests"
+  ], appDir);
   const installed = JSON.parse(
     await readFile(join(appDir, "node_modules", "@closure", "writeguard-generator", "package.json"), "utf8")
   );
@@ -183,6 +201,10 @@ try {
     declarations: "passed",
     programmaticGeneration: "passed",
     stagedPublication: "passed",
+    programmaticVerification: "passed",
+    packagedCliVerification: "passed",
+    controlledGeneratedTests: "passed",
+    realProviderSemantics: "not_run",
     openaiProductionDependency: false
   };
   await mkdir(join(root, ".writeguard"), { recursive: true });

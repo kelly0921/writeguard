@@ -2,7 +2,7 @@
 
 WriteGuard gives agent-triggered external writes a stable business-operation identity, a durable PostgreSQL claim, explicit `UNKNOWN` handling, reconciliation, verification, and a terminal receipt.
 
-The unreleased 0.6.0 Build Week line exposes deterministic MCP tool normalization plus versioned analysis and generation-approval contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis and deterministic source generation live in separate optional packages and remain outside runtime execution.
+The unreleased 0.7.0 Build Week line exposes deterministic MCP tool normalization plus versioned analysis and generation-approval contracts through `@closure/writeguard/analysis`. GPT-5.6 analysis, source generation, and generated-integration verification live in separate optional packages and remain outside runtime execution.
 
 ## Install
 
@@ -58,6 +58,24 @@ writeguard generate --tool normalized.json --analysis analysis.json --review app
 ```
 
 The review file starts in `draft` state with enforcement and reconciliation-hook acknowledgements false. Approval requires the developer to edit and confirm every relevant decision; there is no `--yes` bypass. Generation requires the optional `@closure/writeguard-generator`, verifies source/analysis/provenance/model/review/generator bindings, and refuses unsupported capabilities or existing output paths. It is deterministic, network-free, and API-key-free.
+
+## Verify a generated integration
+
+Safe static verification is the default:
+
+    writeguard verify generated/tool --pretty
+
+Include a separate provider implementation in static shape and compilation checks:
+
+    writeguard verify generated/tool --provider-file provider/simulated.ts --strict --pretty
+
+Execute the manifest-owned generated failure test only with explicit opt-in:
+
+    writeguard verify generated/tool --provider-file provider/simulated.ts --strict --run-tests --pretty
+
+The command emits a `writeguard.verification/v1` run to stdout and returns exit code 6 when required verification fails. Operational errors and the `--run-tests` child-process disclosure use stderr. Static mode never executes generated JavaScript or target package scripts. The verifier ignores target TypeScript plugins and uses fixed compiler arguments.
+
+Passing verification proves only the levels stated in the receipt. Hashes establish integrity and binding, not authenticity. Compilation proves public API type compatibility. Simulated generated tests do not establish real-provider behavior, and real-provider semantics remain `not_run` unless a separate provider-specific conformance workflow actually runs.
 
 ## PostgreSQL setup
 

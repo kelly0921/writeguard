@@ -2,6 +2,13 @@
 
 This project follows Semantic Versioning.
 
+## 0.7.0 - Unreleased Build Week working version (2026-07-17)
+
+- Added the packaged writeguard verify CLI, dynamically backed by the optional generator package.
+- Added safe static verification by default and explicit --run-tests generated-code execution.
+- Added JSON-only verification output, documented exit code 6, strict extra-file handling, provider-file evidence, and controlled timeout selection.
+- Preserved the runtime dependency boundary: verification, TypeScript compilation, and test execution dependencies remain outside the core package.
+
 ## 0.6.0 - Unreleased Build Week working version (2026-07-16)
 
 - Added the versioned `writeguard.generation/v1` review, approval, and generation-request contracts.

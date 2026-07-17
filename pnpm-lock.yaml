@@ -177,13 +177,15 @@ importers:
       '@closure/writeguard':
         specifier: workspace:^
         version: link:../writeguard
-    devDependencies:
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.3
       typescript:
         specifier: ^5.8.0
         version: 5.9.3
+      zod:
+        specifier: ^3.25.0
+        version: 3.25.76
 
   packages/sdk:
     dependencies:

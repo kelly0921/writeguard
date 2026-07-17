@@ -12,7 +12,8 @@ import {
 import {
   generateGuardedToolProject,
   generatorDescriptor,
-  publishGeneratedProject
+  publishGeneratedProject,
+  verifyGeneratedIntegration
 } from "@closure/writeguard-generator";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -126,13 +127,23 @@ if (JSON.stringify(first) !== JSON.stringify(second)) {
 await rm(output, { recursive: true, force: true });
 try {
   await publishGeneratedProject(first, { outDir: output });
+  const staticVerification = await verifyGeneratedIntegration({ directory: output });
+  if (staticVerification.receipt.overallResult !== "passed_with_limitations") {
+    throw new Error("Generated artifact static verification failed");
+  }
+  const executedVerification = await verifyGeneratedIntegration({ directory: output, runTests: true });
+  if (executedVerification.receipt.checks.find(
+    (check) => check.id === "tests.generated_failure_behavior"
+  )?.status !== "passed_with_limitations") {
+    throw new Error("Generated artifact controlled failure-test verification failed");
+  }
   await run("pnpm", ["exec", "tsc", "-p", join(output, "tsconfig.json")]);
   await run("node", ["--test", join(output, "dist", "test", "failure.test.js")]);
   const generatedPackage = JSON.parse(await readFile(join(output, "package.json"), "utf8"));
   if (generatedPackage.dependencies?.openai || generatedPackage.devDependencies?.openai) {
     throw new Error("Generated project unexpectedly depends on OpenAI");
   }
-  console.log("Generated artifact validation passed: deterministic output, TypeScript compilation, and executable failure tests.");
+  console.log("Generated artifact validation passed: deterministic output, static verification, controlled verification, TypeScript compilation, and executable failure tests.");
 } finally {
   await rm(output, { recursive: true, force: true });
 }

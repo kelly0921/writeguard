@@ -2,9 +2,9 @@
 
 WriteGuard is a small TypeScript execution guard for consequential external writes. It proves one narrow thesis: when an external action succeeds but the caller loses the acknowledgement, a retry should reconcile the uncertain result before it considers executing the action again.
 
-This repository is prepared for external sandbox pilot operations, not a production payment system or a general agent framework. **Sandbox and design-partner evaluation only; not production-certified.** External pilot results recorded so far: zero.
+This repository is prepared for external sandbox pilot operations, not a production payment system or a general agent framework. **Sandbox and design-partner evaluation only; not production-certified.** Two clean external-consumer simulated-provider fixtures pass; real external-developer pilot results recorded so far: zero.
 
-OpenAI Build Week starts from the local 0.3.0 baseline, checkpoints Iterations 1 and 2 at unreleased 0.4.0 and 0.5.0, and advances the working core package to unreleased 0.6.0. Iteration 3 adds explicit approval and deterministic generation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+OpenAI Build Week starts from the local 0.3.0 baseline, checkpoints Iterations 1 and 2 at unreleased 0.4.0 and 0.5.0, and advances the working core package to unreleased 0.7.0. Iteration 4 adds independent generated-integration verification without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
 
 ## What the proof demonstrates
 
@@ -31,7 +31,7 @@ WriteGuard owns stable operation identity, PostgreSQL-backed claiming, cross-pro
 - `packages/writeguard`: publishable `@closure/writeguard` facade, declarations, migration API, shadow mode, telemetry, and adapter test kit
 - `packages/writeguard/src/analysis`: versioned analysis contracts, MCP normalization, and injectable analyzer boundary
 - `packages/analyzer-openai`: optional GPT-5.6 Responses API analyzer; the only workspace package with an OpenAI SDK dependency
-- `packages/generator`: optional, network-free approval-bound TypeScript wrapper and failure-test generator
+- `packages/generator`: optional, network-free approval-bound generator plus static/opt-in generated-integration verifier
 - `packages/stripe-adapter`: Stripe test-mode refund execution, reconciliation, and verification
 - `apps/refund-demo`: CLI comparison and operation timeline
 - `apps/agent-demo`: MCP refund tool with two framework call IDs and one business operation
@@ -86,7 +86,22 @@ pnpm writeguard generate --tool normalized-tool.json --analysis analysis.json `
 
 `review` never approves. The editable draft starts with `enforcementAcknowledged` and `developerSuppliedHookAcknowledged` set to `false`; `approve` exits nonzero until required acknowledgements and any optional/application-supplied identity decisions are explicit. There is no `--yes` bypass. `generate` verifies every source, analysis, provenance, identity, model, review, and generator binding before the optional `@closure/writeguard-generator` package writes a new directory.
 
-Generated output contains typed input, wrapper, provider-boundary, configuration, executable failure tests, README, package metadata, and `writeguard-generation.json` content digests. Generation is byte-deterministic, makes no network request, executes no source or generated code, and never needs an API key. The provider executor, reconciliation, verification, durable production storage, and real provider validation remain developer-supplied.
+Generated output contains typed input, wrapper, provider-boundary, configuration, executable failure tests, a bound verification bundle, README, package metadata, and `writeguard-generation.json` content digests. Generation is byte-deterministic, makes no network request, executes no source or generated code, and never needs an API key. The provider executor, reconciliation, verification, durable production storage, and real provider validation remain developer-supplied.
+
+Verify integrity and compilation without executing generated code:
+
+```powershell
+pnpm writeguard verify generated/refund --pretty
+```
+
+Include a separate provider implementation and explicitly run only the manifest-owned generated failure test:
+
+```powershell
+pnpm writeguard verify generated/refund --provider-file provider/simulated.ts --strict --pretty
+pnpm writeguard verify generated/refund --provider-file provider/simulated.ts --strict --run-tests --pretty
+```
+
+Static verification validates paths, symlinks, sizes, inventory, digests, the complete source/analysis/review/generator binding bundle, import and secret policy, provider-boundary shape, and TypeScript compilation with verifier-controlled arguments. It does not load target TypeScript plugins or package scripts. `--run-tests` is an explicit code-execution boundary with time/output limits and a minimized environment, but it is not a security sandbox. Every receipt keeps real-provider semantics `not_run` unless a separate real-provider conformance workflow genuinely ran. Hashes prove integrity and binding, not authenticity.
 
 For the one-command Milestone 4 sandbox, use the [pilot quickstart](docs/PILOT_QUICKSTART.md):
 
@@ -124,7 +139,7 @@ The ordinary retry demo intentionally creates two fake refunds after two ambiguo
 
 ## Installable package
 
-Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.6.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.1.0` only for `generate`.
+Milestone 3 added `@closure/writeguard` version `0.3.0`. The unreleased Build Week 0.7.0 line preserves `.`, `./testing`, and `./analysis`; dynamically loads `@closure/writeguard-analyzer-openai@0.1.1` only for `analyze`; and dynamically loads `@closure/writeguard-generator@0.2.0` only for `generate` and `verify`.
 
 ```ts
 import {
@@ -248,12 +263,13 @@ Operation metadata is redacted by sensitive key/path rules. Request identity is 
 ## Current verification
 
 - TypeScript typecheck and build pass.
-- 105 unit tests pass, including 27 optional-analyzer tests and approval, generation, publication, CLI, determinism, and adversarial security coverage.
+- 145 unit tests pass, including 27 optional-analyzer tests plus approval, generation, verification, controlled execution, CLI, determinism, and adversarial filesystem/security coverage.
 - 20 PostgreSQL/MCP/support/concurrency/shadow/starter/pilot integration tests pass against Docker Compose.
-- 125 repository tests pass; five separately generated failure tests also compile and pass.
+- 165 repository tests pass; five separately generated failure tests and six external-pilot-specific tests also compile and pass.
 - A clean tarball consumer imports the public package, typechecks, reconciles `UNKNOWN`, and creates one external effect.
 - A second clean consumer installs the core and optional analyzer tarballs, typechecks their declarations, runs the public analyzer with an injected fake transport, and verifies packaged CLI missing-key failure without a network call.
-- A third clean consumer installs the core and generator tarballs, typechecks public declarations, generates and stages an integration, and confirms no OpenAI production dependency.
+- A third clean consumer installs the core and generator tarballs, typechecks public declarations, generates, stages, statically verifies, explicitly executes the generated test, exercises the packaged CLI, and confirms no OpenAI production dependency.
+- Separate refund and email clean consumers install packed packages, use recorded offline analysis fixtures, approve different operation identities, implement simulated providers, produce receipts, and pass three pilot-specific tests each. Their real-provider level remains `not_run`.
 - The core and generator production dependency graphs contain no OpenAI SDK. The credential-gated GPT-5.6 model-quality evaluation passed all 9/9 fixtures with a sanitized report.
 - The starter demonstrates unsafe 2, manual 1, and WriteGuard 1 external effect while completing the support case.
 - The fake end-to-end demo produced two refunds under ordinary retry and one under WriteGuard.
@@ -270,7 +286,7 @@ Operation metadata is redacted by sensitive key/path rules. Request identity is 
 - Shadow mode cannot prove whether uncontrolled application code executed without provider reconciliation evidence.
 - PostgreSQL is the only supported durable storage adapter.
 - GPT-5.6 analysis is probabilistic and design-time only. Prompt hierarchy, strict structured output, runtime validation, provenance attachment, safety checks, and adversarial fixtures reduce—but cannot eliminate—prompt-injection and misclassification risk.
-- `writeguard verify` remains future work; an analysis result still cannot become runtime policy without a separate digest-bound developer approval.
+- Generated verification is design-time evidence. Static compilation does not establish provider correctness, and opt-in child-process execution is not a security sandbox.
 - Generated simulated-provider tests do not prove real provider idempotency, reconciliation cardinality, consistency windows, or verification semantics.
 - Deterministic generation supports bounded direct object/array JSON Schemas; recursive references and `oneOf`/`anyOf`/`allOf` are rejected.
 

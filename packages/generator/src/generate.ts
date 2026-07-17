@@ -17,8 +17,10 @@ import {
 import { WriteGuardGeneratorError } from "./errors.js";
 
 export const GENERATOR_ID = "closure.writeguard-generator" as const;
-export const GENERATOR_VERSION = "0.1.0" as const;
-export const GENERATOR_TEMPLATE_VERSION = "writeguard.typescript-wrapper/v1" as const;
+export const GENERATOR_VERSION = "0.2.0" as const;
+export const GENERATOR_TEMPLATE_VERSION = "writeguard.typescript-wrapper/v2" as const;
+export const GENERATION_MANIFEST_VERSION = "writeguard.generation-manifest/v1" as const;
+export const VERIFICATION_BUNDLE_VERSION = "writeguard.verification-bundle/v1" as const;
 export const MAX_GENERATION_INPUT_BYTES = 256 * 1024;
 
 export const generatorDescriptor: GeneratorDescriptor = Object.freeze({
@@ -44,6 +46,7 @@ export type GeneratedArtifact = {
 
 export type GenerationManifest = {
   schemaVersion: typeof generationContractVersion;
+  manifestVersion: typeof GENERATION_MANIFEST_VERSION;
   kind: "writeguard_generation_manifest";
   generator: GeneratorDescriptor;
   templateVersion: typeof GENERATOR_TEMPLATE_VERSION;
@@ -65,11 +68,23 @@ export type GenerationManifest = {
     reviewedAt: string;
   };
   manifestPath: "writeguard-generation.json";
+  verificationBundle: {
+    path: "writeguard-verification-bundle.json";
+    sha256: string;
+  };
   files: Array<{ path: string; sha256: string }>;
   supportedFailureScenarios: string[];
   omittedFailureScenarios: string[];
   developerIntegrationRequirements: string[];
   simulationLimitations: string[];
+};
+
+export type GenerationVerificationBundle = {
+  schemaVersion: typeof VERIFICATION_BUNDLE_VERSION;
+  kind: "writeguard_generation_verification_bundle";
+  tool: NormalizedToolDefinition;
+  analysis: RiskAnalysisResult;
+  review: GuardGenerationReview;
 };
 
 export type GeneratedProject = {
@@ -243,7 +258,8 @@ function renderProvider(review: GuardGenerationReview): string {
   const applicationKey = review.selection.operationIdentity.strategy === "application_supplied"
     ? "  getOperationKey(input: ToolInput): string;\n"
     : "";
-  return `import type {\n` +
+  return `// WRITEGUARD_PROVIDER_BOUNDARY_SCAFFOLD: implement this interface in a separate reviewed file.\n` +
+    `import type {\n` +
     `  ExecutionContext,\n` +
     `  ReconciliationContext,\n` +
     `  ReconciliationOutcome,\n` +
@@ -457,7 +473,7 @@ function renderFailureTests(
     `) {\n` +
     `  const storage = createUnsafeInMemoryStorage();\n` +
     `  const simulator = createSimulator(mode);\n` +
-    `  const writeGuard = createWriteGuard({ storage, namespace: \`generated-\${mode}\`, claimTtlMs: 5, waitTimeoutMs: 250, pollIntervalMs: 1 });\n` +
+    `  const writeGuard = createWriteGuard({ storage, namespace: \`generated-\${mode}\`, claimTtlMs: 30_000, waitTimeoutMs: 5_000, pollIntervalMs: 1 });\n` +
     `  const guarded = create${generatedSymbol}GuardedTool(writeGuard, simulator.provider);\n` +
     `  try { await run({ guarded, simulator }); } finally { await storage.close(); }\n` +
     `}\n\n` +
@@ -495,7 +511,7 @@ function createBaseArtifacts(
       build: "tsc -p tsconfig.json",
       test: "npm run build && node --test dist/test/failure.test.js"
     },
-    dependencies: { "@closure/writeguard": "^0.6.0" },
+    dependencies: { "@closure/writeguard": "^0.7.0" },
     devDependencies: { "@types/node": "^24.0.0", typescript: "^5.8.0" }
   };
   const tsconfig = {
@@ -569,9 +585,23 @@ export function generateGuardedToolProject(requestValue: GuardGenerationRequest)
     generatedSymbol,
     selectedScenarios
   );
+  const verificationBundle: GenerationVerificationBundle = {
+    schemaVersion: VERIFICATION_BUNDLE_VERSION,
+    kind: "writeguard_generation_verification_bundle",
+    tool: request.tool,
+    analysis: request.analysis,
+    review: request.review
+  };
+  const verificationBundleArtifact = artifact(
+    "writeguard-verification-bundle.json",
+    serializeAnalysisArtifact(verificationBundle, { pretty: true })
+  );
+  const generatedArtifacts = [...baseArtifacts, verificationBundleArtifact]
+    .sort((left, right) => left.path.localeCompare(right.path));
   const attestation = request.review.developerAttestation!;
   const manifest: GenerationManifest = {
     schemaVersion: generationContractVersion,
+    manifestVersion: GENERATION_MANIFEST_VERSION,
     kind: "writeguard_generation_manifest",
     generator: generatorDescriptor,
     templateVersion: GENERATOR_TEMPLATE_VERSION,
@@ -593,7 +623,11 @@ export function generateGuardedToolProject(requestValue: GuardGenerationRequest)
       reviewedAt: attestation.reviewedAt
     },
     manifestPath: "writeguard-generation.json",
-    files: baseArtifacts.map(({ path, sha256: digest }) => ({ path, sha256: digest })),
+    verificationBundle: {
+      path: "writeguard-verification-bundle.json",
+      sha256: verificationBundleArtifact.sha256
+    },
+    files: generatedArtifacts.map(({ path, sha256: digest }) => ({ path, sha256: digest })),
     supportedFailureScenarios: selectedScenarios,
     omittedFailureScenarios: omittedScenarios,
     developerIntegrationRequirements: [
@@ -613,6 +647,6 @@ export function generateGuardedToolProject(requestValue: GuardGenerationRequest)
   );
   return {
     manifest,
-    files: [...baseArtifacts, manifestArtifact].sort((left, right) => left.path.localeCompare(right.path))
+    files: [...generatedArtifacts, manifestArtifact].sort((left, right) => left.path.localeCompare(right.path))
   };
 }

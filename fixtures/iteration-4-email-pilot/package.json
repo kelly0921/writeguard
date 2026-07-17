@@ -1,0 +1,10 @@
+{
+  "name": "writeguard-iteration-4-email-pilot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test dist/pilot-test/email.test.js"
+  }
+}

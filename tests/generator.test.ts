@@ -56,7 +56,9 @@ describe("deterministic WriteGuard generator", () => {
     });
     expect(artifactContent(project, "src/guarded-tool.ts")).toContain(`create${symbol}GuardedTool`);
     expect(artifactContent(project, "src/provider.ts")).toContain("interface ProviderBoundary");
-    expect(artifactContent(project, "test/failure.test.ts")).toContain("node:test");
+    const failureTest = artifactContent(project, "test/failure.test.ts");
+    expect(failureTest).toContain("node:test");
+    expect(failureTest).toContain("claimTtlMs: 30_000, waitTimeoutMs: 5_000");
   });
 
   it("produces byte-identical output and correct file-content digests", () => {

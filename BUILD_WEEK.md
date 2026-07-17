@@ -4,7 +4,7 @@
 
 Build Week work began on July 16, 2026. The submission period runs from July 13 through July 21, 2026 at 5:00 PM PT / 8:00 PM ET.
 
-The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased 0.4.0 and 0.5.0 Iteration checkpoints and advances the additive working line to 0.6.0 for Iteration 3.
+The verified pre-Build Week package baseline is the local `@closure/writeguard@0.3.0` artifact. Before the Iteration 1 checkpoint, the repository had an unborn `HEAD`: no commit, tag, or release reference existed, and every repository file was untracked. Therefore there is no honest pre-Build Week commit hash to cite. Milestone 2–4 validation documents and the pre-edit `pnpm validate:pilot-ready` run are the available local provenance evidence. Build Week created unreleased 0.4.0 and 0.5.0 Iteration checkpoints and advances the additive working line to 0.7.0 for Iteration 4.
 
 On July 16, 2026, `npm view @closure/writeguard@0.3.0 --json` queried the configured public registry (`https://registry.npmjs.org/`) and returned `E404 Not Found`. Publication timestamp, registry integrity, shasum, and dist metadata were therefore unavailable and are not fabricated here. The artifact may be unpublished, private, differently scoped, or inaccessible without registry authorization; none of those possibilities is claimed as fact. Until independently verifiable registry metadata is supplied, documentation must call 0.3.0 a pre-Build Week local package baseline—not a verified public npm release.
 
@@ -61,12 +61,13 @@ Build Week must reduce integration distance while preserving deterministic enfor
 - Preserved provider-specific execution, reconciliation, and verification hooks rather than inventing provider semantics.
 - Generated and passed executable tests for duplicate invocation, timeout-after-submission, delayed reconciliation, concurrency, and crash-after-effect paths.
 
-### Iteration 4 — planned for July 20–21: verification and submission experience
+### Iteration 4 — July 16–17: generated integration verification and clean pilots
 
-- `writeguard verify` for generated integration evidence.
-- Receipt/report rendering through the same public contracts future UI surfaces would consume.
-- Measure the under-ten-minute path on a fresh external-style fixture.
-- Submission documentation and demo polish that does not change product architecture.
+- Added `writeguard.verification/v1` deterministic receipts with five independent evidence levels.
+- Added safe static verification of manifests, bundles, paths, digests, bindings, imports, secrets, provider boundaries, and controlled compilation.
+- Added explicit `--run-tests` execution of only manifest-owned generated tests with fixed arguments, time/output limits, and minimized environment inheritance.
+- Added refund and email clean consumers installed from packed public packages, with distinct identities, simulated providers, receipts, and pilot-specific tests.
+- Measured automated fixture execution separately from still-pending maintainer and external-developer onboarding measurements.
 
 Later iterations remain conditional on the preceding contract evidence and deadline. Scope may narrow rather than shipping fabricated or unsafe commands.
 
@@ -102,6 +103,15 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 - Added protection against unapproved generation, digest/provenance mismatch, optional identity ambiguity, unsupported provider capabilities, source injection, traversal, overwrite, symlink escape, excessive schemas, recursive references, and prototype-pollution-shaped keys.
 - Generated TypeScript compiled and five simulated-provider failure tests passed; clean external tarball installation and public declaration use passed.
 
+### 2026-07-17 — Iteration 4
+
+- Advanced unreleased `@closure/writeguard` to 0.7.0 and `@closure/writeguard-generator` to 0.2.0; analyzer remains 0.1.1.
+- Added a manifest-owned verification bundle and versioned generation manifest/template identifiers.
+- Added safe-default `writeguard verify`, deterministic receipt validation/digests, provider-file evidence, strict extra-file mode, and exit code 6.
+- Added controlled TypeScript compilation that ignores target config/plugins and explicit generated-test execution that never invokes target package scripts.
+- Added tamper, traversal, symlink, case-collision, size, private-import, OpenAI-dependency, secret, timeout, output-limit, environment, and binding coverage.
+- Added packed-package refund and email consumers. Each produces a passed-with-limitations receipt while keeping real-provider semantics not run.
+
 ## Validation evidence
 
 ### Pre-edit baseline — passed July 16
@@ -120,13 +130,19 @@ The Iteration 2 deterministic suite contains 72 unit tests, including 27 optiona
 
 The repository suite contains 105 deterministic unit tests plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 125 repository tests. Generated artifact validation separately compiles emitted TypeScript and executes five generated failure tests. Determinism, manifest digests, public API imports, zero-OpenAI runtime dependencies, staged publication, clean tarball consumption, and adversarial source/path/schema handling are covered. Full command evidence is recorded in `docs/BUILD_WEEK_ITERATION_3_VALIDATION.md`.
 
+### Iteration 4 validation
+
+The repository suite contains 145 unit tests plus 20 PostgreSQL/MCP/concurrency/pilot integration tests: 165 repository tests. Five unique generated failure scenarios and six pilot-specific external-consumer tests also pass. Both clean pilots install packed packages, produce valid verification receipts, and make zero OpenAI calls. Automated execution timing is measured separately; maintainer clean-room and external-developer onboarding measurements remain pending. Full evidence is recorded in `docs/BUILD_WEEK_ITERATION_4_VALIDATION.md`.
+
 ## Known limitations
 
 - GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; the bounded live gate passed but cannot establish universal classification quality.
 - Normalization accepts one MCP-style tool definition, not a full server manifest or live server connection.
 - Sensitive-field detection is a deterministic name/format heuristic and requires developer review.
 - Normalization preserves JSON Schema but does not fully evaluate every JSON Schema dialect or remote reference.
-- `writeguard verify`, OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
+- OpenAPI ingestion, UI, hosted services, authentication, and billing are not implemented.
+- Verification child processes are bounded but are not a security sandbox; network isolation is not claimed.
+- Digests establish integrity and binding but not authenticity or trust in the original tool, analysis, or review.
 - Generated simulations prove supported WriteGuard integration behavior only; real provider reconciliation, consistency, verification, and production storage require developer implementation and validation.
 - No external developer has yet measured the under-ten-minute journey.
 - Local Build Week history begins at the Iteration 1 checkpoint; no commit or tag has been pushed, and no package has been published or deployed.

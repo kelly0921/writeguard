@@ -72,18 +72,27 @@ writeguard analyze <tool-definition.json|->
 writeguard review --tool <normalized.json> --analysis <analysis.json> --out <draft.json>
 writeguard approve --tool <normalized.json> --analysis <analysis.json> --review <edited-draft.json> --reviewer <id> --out <approved.json>
 writeguard generate --tool <normalized.json> --analysis <analysis.json> --review <approved.json> --out-dir <new-directory>
+writeguard verify <generated-directory> [--provider-file <relative-path>] [--strict] [--run-tests]
 ```
 
-Commands emit machine-readable JSON on stdout; errors remain on stderr. `normalize-mcp` is no-network. `analyze` dynamically loads `@closure/writeguard-analyzer-openai`, requires `OPENAI_API_KEY`, always targets `gpt-5.6`, and exits 4 without partial stdout when analysis is missing, refused, incomplete, invalid, mismatched, or unsafe. `review` creates an editable draft with approval acknowledgements false. `approve` has no `--yes` path and exits 5 without output on invalid or incomplete review. `generate` dynamically loads `@closure/writeguard-generator`, validates every binding, makes no network request, and stages a new output directory. `verify` and a receipt `report` command remain unimplemented. A future UI must use these public contracts rather than a parallel model.
+Commands emit machine-readable JSON on stdout; errors remain on stderr. `normalize-mcp` is no-network. `analyze` dynamically loads `@closure/writeguard-analyzer-openai`, requires `OPENAI_API_KEY`, always targets `gpt-5.6`, and exits 4 without partial stdout when analysis is missing, refused, incomplete, invalid, mismatched, or unsafe. `review` creates an editable draft with approval acknowledgements false. `approve` has no `--yes` path and exits 5 without output on invalid or incomplete review. `generate` dynamically loads `@closure/writeguard-generator`, validates every binding, makes no network request, and stages a new output directory. `verify` uses the same optional package, is static by default, requires explicit `--run-tests` before generated code executes, and exits 6 when required checks fail. A future UI must validate and render the same public receipt rather than use a parallel model.
+
+## Verification handoff
+
+Current generation includes a manifest-owned `writeguard.verification-bundle/v1` artifact containing the normalized tool, recommendation-only analysis, and approved review required to recompute the full digest chain. The optional generator package exposes runtime-validated `writeguard.verification/v1` receipts. The deterministic runtime core does not import verification, TypeScript, filesystem traversal, or process-execution dependencies.
+
+Verification reports artifact integrity, compilation, simulated failure behavior, provider integration completeness, and real-provider semantics independently. Safe static mode validates bounded files, paths, symlinks, manifest and bundle versions, digests, bindings, imports, credential patterns, provider-boundary shape, and controlled TypeScript compilation. It does not load target compiler plugins or execute package scripts.
+
+Generated-test execution is opt-in, follows successful integrity checks, uses fixed compiler and Node test arguments, and is bounded by timeout and output limits. It is a child process, not a security sandbox. Digests establish integrity and binding but not authenticity. Compilation and simulation never establish real-provider semantics; that level remains `not_run` until a separate provider-specific conformance workflow actually executes.
 
 ## Versioning and compatibility
 
 - `writeguard.analysis/v1` is independent of the npm package version.
 - Breaking changes require a new contract version and explicit parser/migration path.
 - Unknown versions fail with actionable errors and are never silently coerced.
-- The 0.4.0 checkpoint added `./analysis` and a CLI bin without removing `.` or `./testing`; unreleased 0.5.0 added the dynamic `analyze` path; unreleased 0.6.0 adds generation contracts and review/approve/generate CLI paths.
+- The 0.4.0 checkpoint added `./analysis` and a CLI bin without removing `.` or `./testing`; unreleased 0.5.0 added dynamic analysis; 0.6.0 added generation contracts; 0.7.0 adds the dynamic safe-default verification CLI.
 - Generated artifacts must record the contract version and source/analysis digest.
-- `@closure/writeguard-analyzer-openai@0.1.1` and `@closure/writeguard-generator@0.1.0` depend only on public contracts. The core does not depend on either optional package or the OpenAI SDK; the generator has no OpenAI dependency.
+- `@closure/writeguard-analyzer-openai@0.1.1` and `@closure/writeguard-generator@0.2.0` depend only on public contracts. The core does not depend on either optional package or the OpenAI SDK; the generator and verifier have no OpenAI dependency.
 
 ## Security, privacy, and redaction
 
@@ -125,7 +134,7 @@ This does not make a complete prompt-injection immunity claim. Model classificat
 - Studio/dashboard, hosted control plane, authentication, billing, workspaces, or enterprise permissions;
 - OpenAPI ingestion;
 - model-generated trusted runtime code;
-- fabricated `verify` or `report` success;
+- fabricated verification, authenticity, sandbox, or real-provider claims;
 - multiple new provider integrations;
 - production manual-reconciliation controls;
 - a generic chatbot or workflow engine;

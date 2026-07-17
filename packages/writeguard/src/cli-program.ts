@@ -46,9 +46,12 @@ const usage = [
   "    [--reviewed-at <ISO-8601>] [--pretty]",
   "  writeguard generate --tool <normalized-tool.json> --analysis <analysis.json>",
   "    --review <approved-review.json> --out-dir <new-directory> [--pretty]",
+  "  writeguard verify <generated-directory> [--provider-file <relative-path>]",
+  "    [--strict] [--run-tests] [--timeout-ms <milliseconds>] [--pretty]",
   "",
   "analyze requires @closure/writeguard-analyzer-openai and OPENAI_API_KEY; it uses gpt-5.6.",
   "generate requires the optional @closure/writeguard-generator package and makes no network requests.",
+  "verify uses that package for safe static checks; --run-tests explicitly executes manifest-owned generated code.",
   "review creates an unapproved editable file; approve has no --yes bypass."
 ].join("\n");
 
@@ -173,6 +176,18 @@ type GenerateAndPublishResult = {
   manifest: unknown;
 };
 
+type VerifyGeneratedResult = {
+  receipt: {
+    overallResult: "passed" | "failed" | "passed_with_limitations" | "not_run" | "not_applicable";
+  };
+  receiptDigest: string;
+  runtime: {
+    durationMs: number;
+    compilationDurationMs: number;
+    generatedTestDurationMs: number | null;
+  };
+};
+
 export type WriteGuardCliDependencies = {
   loadAnalyzer?: () => Promise<ToolRiskAnalyzer>;
   generateAndPublish?: (options: {
@@ -181,6 +196,13 @@ export type WriteGuardCliDependencies = {
     review: unknown;
     outDir: string;
   }) => Promise<GenerateAndPublishResult>;
+  verifyGenerated?: (options: {
+    directory: string;
+    runTests: boolean;
+    strict: boolean;
+    providerFile?: string;
+    timeoutMs?: number;
+  }) => Promise<VerifyGeneratedResult>;
   now?: () => string;
 };
 
@@ -252,9 +274,37 @@ async function generateAndPublishWithOptionalPackage(options: {
   return { ...published, manifest: project.manifest };
 }
 
+async function verifyWithOptionalPackage(options: {
+  directory: string;
+  runTests: boolean;
+  strict: boolean;
+  providerFile?: string;
+  timeoutMs?: number;
+}): Promise<VerifyGeneratedResult> {
+  const packageName = "@closure/writeguard-generator";
+  let loaded: unknown;
+  try {
+    loaded = await import(packageName);
+  } catch (error) {
+    throw new OptionalPackageError(
+      "The verify command requires the optional " + packageName +
+        " package. Install it alongside @closure/writeguard, then retry.",
+      { cause: error }
+    );
+  }
+  const verifier = (loaded as { verifyGeneratedIntegration?: unknown }).verifyGeneratedIntegration;
+  if (typeof verifier !== "function") {
+    throw new OptionalPackageError(
+      packageName + " is installed but does not expose a compatible verification API."
+    );
+  }
+  return (verifier as (value: typeof options) => Promise<VerifyGeneratedResult>)(options);
+}
+
 const defaultDependencies = {
   loadAnalyzer: loadOptionalOpenAIAnalyzer,
   generateAndPublish: generateAndPublishWithOptionalPackage,
+  verifyGenerated: verifyWithOptionalPackage,
   now: () => new Date().toISOString()
 };
 
@@ -382,6 +432,88 @@ async function runGenerate(
   return 0;
 }
 
+function parseVerifyOptions(args: string[]): {
+  directory: string;
+  pretty: boolean;
+  runTests: boolean;
+  strict: boolean;
+  providerFile?: string;
+  timeoutMs?: number;
+} {
+  let directory: string | undefined;
+  let pretty = false;
+  let runTests = false;
+  let strict = false;
+  let providerFile: string | undefined;
+  let timeoutMs: number | undefined;
+  for (let index = 0; index < args.length; index += 1) {
+    const argument = args[index]!;
+    if (argument === "--pretty") {
+      pretty = true;
+      continue;
+    }
+    if (argument === "--run-tests") {
+      runTests = true;
+      continue;
+    }
+    if (argument === "--strict") {
+      strict = true;
+      continue;
+    }
+    if (argument === "--provider-file" || argument === "--timeout-ms") {
+      const value = args[index + 1];
+      if (!value || value.startsWith("--")) throw new Error(argument + " requires a value");
+      if (argument === "--provider-file") {
+        if (providerFile) throw new Error("verify: duplicate option --provider-file");
+        providerFile = value;
+      } else {
+        if (timeoutMs !== undefined) throw new Error("verify: duplicate option --timeout-ms");
+        timeoutMs = Number(value);
+        if (!Number.isInteger(timeoutMs) || timeoutMs < 100 || timeoutMs > 120_000) {
+          throw new Error("--timeout-ms must be an integer from 100 through 120000");
+        }
+      }
+      index += 1;
+      continue;
+    }
+    if (argument.startsWith("--")) throw new Error("verify: unsupported argument " + argument);
+    if (directory) throw new Error("verify accepts exactly one generated directory");
+    directory = argument;
+  }
+  if (!directory) throw new Error("verify requires a generated directory");
+  return {
+    directory,
+    pretty,
+    runTests,
+    strict,
+    ...(providerFile ? { providerFile } : {}),
+    ...(timeoutMs !== undefined ? { timeoutMs } : {})
+  };
+}
+
+async function runVerify(
+  args: string[],
+  io: WriteGuardCliIo,
+  dependencies: WriteGuardCliDependencies
+): Promise<number> {
+  const options = parseVerifyOptions(args);
+  if (options.runTests) {
+    io.stderr(
+      "writeguard: --run-tests executes integrity-verified generated code in a constrained child process; " +
+      "this is not a security sandbox.\n"
+    );
+  }
+  const result = await (dependencies.verifyGenerated ?? defaultDependencies.verifyGenerated)({
+    directory: options.directory,
+    runTests: options.runTests,
+    strict: options.strict,
+    ...(options.providerFile ? { providerFile: options.providerFile } : {}),
+    ...(options.timeoutMs !== undefined ? { timeoutMs: options.timeoutMs } : {})
+  });
+  writeResult(io, result, options.pretty);
+  return result.receipt.overallResult === "failed" ? 6 : 0;
+}
+
 export async function runWriteGuardCli(
   args: string[],
   io: WriteGuardCliIo = defaultIo,
@@ -392,7 +524,7 @@ export async function runWriteGuardCli(
     io.stdout(`${usage}\n`);
     return 0;
   }
-  if (!["normalize-mcp", "analyze", "review", "approve", "generate"].includes(command)) {
+  if (!["normalize-mcp", "analyze", "review", "approve", "generate", "verify"].includes(command)) {
     io.stderr(`writeguard: unsupported command ${command}\n\n${usage}\n`);
     return 2;
   }
@@ -402,13 +534,15 @@ export async function runWriteGuardCli(
     }
     if (command === "review") return await runReview(args.slice(1), io);
     if (command === "approve") return await runApprove(args.slice(1), io, dependencies);
-    return await runGenerate(args.slice(1), io, dependencies);
+    if (command === "generate") return await runGenerate(args.slice(1), io, dependencies);
+    return await runVerify(args.slice(1), io, dependencies);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     io.stderr(`writeguard: ${message}\n`);
     if (error instanceof McpToolDefinitionError) return 3;
     if (command === "analyze") return 4;
     if (["review", "approve", "generate"].includes(command)) return 5;
+    if (command === "verify") return 6;
     return 2;
   }
 }

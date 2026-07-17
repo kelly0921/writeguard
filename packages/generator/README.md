@@ -1,27 +1,46 @@
-# `@closure/writeguard-generator`
+# @closure/writeguard-generator
 
-Optional design-time generation for WriteGuard. The package accepts only a validated normalized tool, its bound recommendation-only analysis, and a separately attested `writeguard.generation/v1` review.
+Optional Node-only design-time generation and verification for WriteGuard. The package accepts a validated normalized tool, bound recommendation-only analysis, and separately attested writeguard.generation/v1 review.
 
-Generation is deterministic and network-free. It emits a typed wrapper, developer-supplied provider boundary, configuration, executable simulated-provider failure tests, and a content-digested manifest. It never calls a model and generated runtime code has no OpenAI dependency.
+Generation is deterministic and network-free. Version 0.2.0 emits a typed wrapper, provider boundary, configuration, simulated-provider failure tests, a writeguard-verification-bundle/v1 binding bundle, and a content-digested writeguard.generation-manifest/v1 manifest. It never calls a model and generated runtime code has no OpenAI dependency.
 
-Publishing is staged and refuses existing output paths, unsafe artifact paths, schema references, prototype-pollution-shaped properties, and symlink traversal. Real provider execution, reconciliation, verification, and durable production storage remain developer responsibilities.
+Programmatic generation:
 
-```ts
-import { createGuardGenerationRequest } from "@closure/writeguard/analysis";
-import {
-  generateGuardedToolProject,
-  generatorDescriptor,
-  publishGeneratedProject
-} from "@closure/writeguard-generator";
+    import { createGuardGenerationRequest } from "@closure/writeguard/analysis";
+    import {
+      generateGuardedToolProject,
+      generatorDescriptor,
+      publishGeneratedProject
+    } from "@closure/writeguard-generator";
 
-const request = createGuardGenerationRequest({
-  generator: generatorDescriptor,
-  tool: normalizedTool,
-  analysis,
-  review: approvedReview
-});
-const project = generateGuardedToolProject(request); // no filesystem write
-await publishGeneratedProject(project, { outDir: "generated/refund" });
-```
+    const request = createGuardGenerationRequest({
+      generator: generatorDescriptor,
+      tool: normalizedTool,
+      analysis,
+      review: approvedReview
+    });
+    const project = generateGuardedToolProject(request);
+    await publishGeneratedProject(project, { outDir: "generated/refund" });
 
-The result manifest is available before publication. Identical requests produce byte-identical files. Direct object and array schemas are supported up to eight generated type levels and 256 properties; `$ref`, `$defs`, `definitions`, `oneOf`, `anyOf`, and `allOf` are rejected. Generated tests cover only approved supported scenarios and clearly identify the simulated-provider limitation.
+Programmatic verification:
+
+    import { verifyGeneratedIntegration } from "@closure/writeguard-generator";
+
+    const staticRun = await verifyGeneratedIntegration({
+      directory: "generated/refund",
+      providerFile: "provider/simulated.ts"
+    });
+
+    const executedRun = await verifyGeneratedIntegration({
+      directory: "generated/refund",
+      providerFile: "provider/simulated.ts",
+      runTests: true
+    });
+
+Safe static verification validates the manifest and bundle, path and symlink safety, bounded file inventory, digests and bindings, secret and import policy, provider-boundary shape, and controlled TypeScript compilation. It does not load target TypeScript configuration or plugins and does not run target scripts.
+
+Generated-test execution is explicit. It rechecks integrity, compiles with fixed arguments into temporary verifier-owned output, runs only the manifest-owned generated failure test with the current Node executable, bounds time and output, minimizes inherited environment variables, and removes temporary output. This child process is not a security sandbox.
+
+Every writeguard.verification/v1 receipt states what ran, what did not run, and why. Digests prove integrity and binding, not authenticity. Compilation and simulated providers never prove real-provider semantics.
+
+Publishing refuses existing output paths, unsafe artifact paths, schema references, prototype-pollution-shaped properties, and symlink traversal. Direct object and array schemas are supported up to eight generated type levels and 256 properties; reference and composition schemas remain unsupported.

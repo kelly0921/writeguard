@@ -1,6 +1,6 @@
 {
   "name": "@closure/writeguard",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Durable execution control, explicit uncertainty, reconciliation, and receipts for agent-triggered external writes.",
   "type": "module",
   "main": "./dist/writeguard/src/index.js",
