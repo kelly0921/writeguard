@@ -133,8 +133,9 @@ Later iterations remain conditional on the preceding contract evidence and deadl
 
 - Advanced unreleased `@closure/writeguard-generator` to 0.3.1 as a patch-level verifier correction after remote Windows CI exposed platform-path alias handling.
 - Added a repository line-ending contract so byte-bound evaluation inputs remain reproducible across Windows and Linux checkouts.
-- Private remote and PostgreSQL CI are verified; the second Windows/Linux evaluation fix and external-developer evidence remain pending.
-- Recorded the missing repository license as a release blocker instead of selecting one without owner approval.
+- Private `master`, annotated Iteration 1-5 tags, Windows/Ubuntu evaluation, Ubuntu/PostgreSQL CI, sanitized artifacts, and maintainer fresh-clone evaluation are verified.
+- Kept the repository private and license-free under the owner's current judging decision instead of selecting a license without approval.
+- External-developer evidence, final freeze, judge access, video, and submission remain pending owner-controlled actions.
 
 ## Validation evidence
 
@@ -162,6 +163,10 @@ The repository suite contains 145 unit tests plus 20 PostgreSQL/MCP/concurrency/
 
 The planned final suite contains 171 deterministic unit tests plus the unchanged 20 PostgreSQL/MCP/concurrency/pilot integration tests: 191 repository tests. The canonical evaluation separately executes five manifest-owned generated failure scenarios and six public adapter-conformance scenarios from packed public packages. Automated runtime is reported but is not onboarding evidence. Final gate results are recorded in `docs/BUILD_WEEK_ITERATION_5_VALIDATION.md`; Stripe test-mode conformance, external-developer timing, remote CI, and public submission remain pending.
 
+### Iteration 6 remote validation
+
+The corrected repository suite contains 172 deterministic unit tests plus 20 integration tests: 192 repository tests. Remote evaluation run `29592547066` passed on Windows and Ubuntu, and CI run `29592547198` passed the Ubuntu/PostgreSQL pilot gate for commit `5a0b5956a995cd7020fb4df880ad5d68a58eced7`. A new private clone passed frozen install and the canonical evaluation in 88.773 seconds of automated evaluator time with zero OpenAI, Stripe, or other-provider calls and no PostgreSQL requirement. Two unaffiliated external-developer evaluations remain pending. See `docs/BUILD_WEEK_ITERATION_6_VALIDATION.md`.
+
 ## Known limitations
 
 - GPT-5.6 output is probabilistic analysis evidence, not a safety guarantee; the bounded live gate passed but cannot establish universal classification quality.
@@ -174,5 +179,5 @@ The planned final suite contains 171 deterministic unit tests plus the unchanged
 - Generated simulations prove supported WriteGuard integration behavior only; real provider reconciliation, consistency, verification, and production storage require developer implementation and validation.
 - No external developer has yet measured the under-ten-minute journey.
 - The repository has no owner-approved license; public distribution remains blocked until that decision is made.
-- Local Build Week history begins at the Iteration 1 checkpoint; no commit or tag has been pushed, and no package has been published or deployed.
+- Local Build Week history begins at the Iteration 1 checkpoint. Owner-approved commits and annotated Iteration 1-5 tags exist only in the private repository; no package has been published or deployed.
 - Existing execution guarantees still depend on correct application identity, reconciliation, verification, and durable storage.

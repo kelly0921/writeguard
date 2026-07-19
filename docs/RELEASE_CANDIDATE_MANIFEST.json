@@ -1,6 +1,6 @@
 {
   "schemaVersion": "writeguard.release-candidate/v1",
-  "status": "remote_validation_in_progress",
+  "status": "external_validation_pending",
   "git": {
     "baselineCommit": "9981422094b30c245d779698f38ff39e822e13db",
     "baselineTag": "build-week-iteration-5",
@@ -27,7 +27,7 @@
       "windows-latest",
       "ubuntu-latest"
     ],
-    "remoteCiStatus": "postgresql_and_linux_evaluation_passed_windows_fixture_fix_locally_validated",
+    "remoteCiStatus": "passed_windows_linux_and_postgresql",
     "macosStatus": "not_validated"
   },
   "evaluation": {
@@ -36,7 +36,7 @@
       "minimum": 30,
       "maximum": 120
     },
-    "latestLocalRuntimeMs": 47935,
+    "latestLocalRuntimeMs": 88773,
     "unsafeSimulatedEffects": 2,
     "guardedSimulatedEffects": 1,
     "credentialsRequired": [],
@@ -74,8 +74,8 @@
   "externalValidation": {
     "evaluator1": "pending",
     "evaluator2": "pending",
-    "maintainerCleanRoomTiming": "pending",
-    "freshRemoteClone": "passed_on_private_master_1d4a4c52141a0a221caf209884959bfbf5438f8a; final candidate pending"
+    "maintainerCleanRoomTiming": "131.176_seconds_clone_through_evaluation_completion_on_windows_2026-07-18; command_sequence_run_by_maintainer; not_external_onboarding",
+    "freshRemoteClone": "passed_on_private_master_5a0b5956a995cd7020fb4df880ad5d68a58eced7"
   },
   "packedArtifacts": [
     {
@@ -119,7 +119,7 @@
     "Compilation proves public API type compatibility, not provider correctness.",
     "Digests prove integrity and binding, not authorship or authenticity.",
     "Durable deployment requires reviewed provider hooks and PostgreSQL-backed storage.",
-    "The PostgreSQL remote workflow passed; the Windows/Linux evaluation fix still requires an approved push and green rerun.",
-    "Final-candidate fresh-clone testing and two unaffiliated developer evaluations are pending."
+    "Remote Windows, Linux, and PostgreSQL workflows passed for commit 5a0b5956a995cd7020fb4df880ad5d68a58eced7.",
+    "Two unaffiliated developer evaluations are pending."
   ]
 }

@@ -2,9 +2,28 @@
 
 Thank you for testing WriteGuard. Please use a disposable clone and do not add real credentials or customer data.
 
+## Access and requirements
+
+- Read access to the private repository: `https://github.com/kelly0921/writeguard`
+- Git
+- Node.js 20 or newer
+- pnpm 11.9.0
+- Windows, Ubuntu Linux, or another environment reported explicitly; macOS is not yet validated
+- Network access for cloning and dependency installation
+- No OpenAI key, Stripe key, PostgreSQL, Docker, or `.env` file
+
 ## First run
 
-1. Confirm Node.js 20+ and pnpm are available.
+1. Start your timer, then create a disposable clone:
+
+   ```powershell
+   git clone https://github.com/kelly0921/writeguard.git writeguard-evaluation
+   cd writeguard-evaluation
+   git checkout master
+   node --version
+   pnpm --version
+   ```
+
 2. Run:
 
    ```powershell

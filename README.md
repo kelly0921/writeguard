@@ -6,18 +6,18 @@ It is intended for agent-tool, backend, platform, reliability, and payments deve
 
 This repository is an evaluation release candidate, not a production payment system or a general agent framework. **Sandbox and external evaluation only; not production-certified.** Real external-developer results recorded so far: zero.
 
-The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.1`. Iteration 5 turns the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement. See [BUILD_WEEK.md](BUILD_WEEK.md).
+The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.1`. Iteration 5 turned the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement; Iteration 6 validates that release candidate remotely and with fresh private clones. See [BUILD_WEEK.md](BUILD_WEEK.md).
 
 ## Evaluate locally
 
-Requirements: Node.js 20+ and pnpm. No API key, provider credential, Docker, PostgreSQL, or prior WriteGuard knowledge is required.
+Requirements: Node.js 20+ and pnpm 11.9.0. No API key, provider credential, Docker, PostgreSQL, or prior WriteGuard knowledge is required.
 
 ```powershell
 pnpm install --frozen-lockfile
 pnpm evaluate:local
 ```
 
-Recorded Windows runs have taken roughly 40–80 seconds; allow up to two minutes depending on package-cache and registry conditions. This is automated command time, not developer onboarding time. Windows 11 is locally validated. The checked CI example targets Windows and Ubuntu, but remote CI has not run; macOS remains unvalidated.
+Recorded Windows evaluator runs have taken roughly 37–89 seconds; allow up to two minutes depending on package-cache and registry conditions. This is automated command time, not developer onboarding time. Windows 11 is locally validated. Remote GitHub Actions passed on Windows and Ubuntu for commit `5a0b5956a995cd7020fb4df880ad5d68a58eced7`, including the Ubuntu/PostgreSQL pilot gate. macOS remains unvalidated.
 
 This canonical command installs packed public packages into a clean temporary consumer, then demonstrates:
 
@@ -26,6 +26,8 @@ This canonical command installs packed public packages into a clean temporary co
 The analysis step uses a runtime-validated, deterministic recorded GPT-5.6-compatible fixture and makes no live model call. Approval is separate and explicit. The command compares two unsafe simulated effects with one guarded simulated effect; verifies artifact bindings and controlled compilation; opts into only the manifest-owned generated tests; runs the public six-scenario adapter conformance kit; applies a versioned receipt policy; and renders one summary derived from the receipts.
 
 The resulting sanitized artifacts are written under `.writeguard/evaluation-*`. The summary clearly labels the provider as simulated and real-provider semantics as `not_run`. It does not prove production behavior, provider correctness, or the under-ten-minute external-developer outcome. See [the evaluation runbook](docs/EVALUATION_RUNBOOK.md).
+
+Private-repository judges should use the exact access, environment, command, expected-output, and troubleshooting instructions in [docs/JUDGE_TESTING.md](docs/JUDGE_TESTING.md).
 
 ## What the proof demonstrates
 
@@ -289,9 +291,9 @@ Operation metadata is redacted by sensitive key/path rules. Request identity is 
 ## Current verification
 
 - TypeScript typecheck and build pass.
-- 145 unit tests pass, including 27 optional-analyzer tests plus approval, generation, verification, controlled execution, CLI, determinism, and adversarial filesystem/security coverage.
+- 172 unit tests pass, including 27 optional-analyzer tests plus approval, generation, verification, controlled execution, CLI, determinism, and adversarial filesystem/security coverage.
 - 20 PostgreSQL/MCP/support/concurrency/shadow/starter/pilot integration tests pass against Docker Compose.
-- 165 repository tests pass; five separately generated failure tests and six external-pilot-specific tests also compile and pass.
+- 192 repository tests pass; five separately generated failure tests, six adapter-conformance scenarios, and six external-pilot-specific tests also compile and pass.
 - A clean tarball consumer imports the public package, typechecks, reconciles `UNKNOWN`, and creates one external effect.
 - A second clean consumer installs the core and optional analyzer tarballs, typechecks their declarations, runs the public analyzer with an injected fake transport, and verifies packaged CLI missing-key failure without a network call.
 - A third clean consumer installs the core and generator tarballs, typechecks public declarations, generates, stages, statically verifies, explicitly executes the generated test, exercises the packaged CLI, and confirms no OpenAI production dependency.

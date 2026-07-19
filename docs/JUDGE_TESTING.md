@@ -1,6 +1,6 @@
 # Judge testing instructions
 
-These instructions target the planned private evaluation repository. Replace the repository URL only after the owner approves and the remote exists.
+These instructions target the owner-approved private evaluation repository at `https://github.com/kelly0921/writeguard`.
 
 ## Access
 
@@ -32,14 +32,15 @@ pnpm --version
 ## Clone and evaluate
 
 ```powershell
-git clone <OWNER_APPROVED_PRIVATE_REPOSITORY_URL> writeguard
+git clone https://github.com/kelly0921/writeguard.git writeguard
 cd writeguard
-git checkout build-week-iteration-6
+git checkout master
+git rev-parse HEAD
 pnpm install --frozen-lockfile
 pnpm evaluate:local
 ```
 
-Allow up to two minutes for the evaluation after installation; registry/cache conditions vary. This is automated execution time, not an onboarding claim.
+At the Iteration 6A handoff, the remotely validated product commit is `5a0b5956a995cd7020fb4df880ad5d68a58eced7`. A later owner-approved documentation-only commit may advance `master` without changing the evaluated packages or runtime. Allow up to two minutes for the evaluation after installation; registry/cache conditions vary. This is automated execution time, not an onboarding claim.
 
 Expected high-level output:
 
@@ -102,9 +103,14 @@ Historical sanitized GPT-5.6 9/9 evidence and its provenance limitation are docu
 
 - `pnpm` missing: activate pnpm 11.9.0 using Corepack as shown above.
 - Install failure: confirm registry access and retry `pnpm install --frozen-lockfile`; do not remove the frozen-lockfile flag.
+- Windows install warning about a missing pre-build `writeguard` bin: if installation exits zero, continue to `pnpm evaluate:local`, which builds the packages before invoking the CLI. Treat a nonzero install as a failure.
 - Evaluation install timeout: confirm npm registry access. The evaluator installs packed packages into a fresh temporary consumer.
 - Windows file-lock error: close editors/indexers touching the repository and rerun once. Do not disable integrity checks.
 - Nonzero evaluation: retain sanitized `.writeguard/evaluation-*` artifacts and report the failing stage. Never attach environment files or credentials.
 - Docker/PostgreSQL prompts: stop; neither is required for this path.
 
-Remote Windows/Linux CI and this fresh-clone procedure remain unverified until the approved repository is pushed and tested.
+Remote evidence for product commit `5a0b5956a995cd7020fb4df880ad5d68a58eced7`:
+
+- [Windows and Ubuntu evaluation run 29592547066](https://github.com/kelly0921/writeguard/actions/runs/29592547066): passed.
+- [Ubuntu/PostgreSQL pilot run 29592547198](https://github.com/kelly0921/writeguard/actions/runs/29592547198): passed.
+- A maintainer fresh clone from private `master` passed the commands above on Windows 11 with Node 24.17.0 and pnpm 11.9.0. The evaluator reported 88.773 seconds. This is not external-developer or onboarding-time evidence.

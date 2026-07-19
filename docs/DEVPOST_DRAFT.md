@@ -7,7 +7,7 @@ Status: draft only. Do not submit or publish from this document.
 - Recommended name: WriteGuard
 - Tagline: Transactional safety for consequential actions performed by AI agents.
 - Category: Developer Tools
-- Repository URL: pending owner-approved private repository
+- Repository URL: `https://github.com/kelly0921/writeguard` (private)
 - Demo video URL: pending; no upload authorized
 
 ## Short description
@@ -68,13 +68,13 @@ Iterations 1–5 added deterministic MCP normalization, GPT-5.6 structured analy
 ## Verified metrics
 
 - 2 unsafe simulated effects versus 1 guarded simulated effect
-- 171 unit tests and 20 integration tests
+- 172 unit tests and 20 integration tests
 - 5 generated failure scenarios
 - 6 adapter-conformance scenarios
 - 6 packed-pilot-specific tests
 - historical sanitized GPT-5.6 evaluation: 9/9
 - canonical evaluator: 0 OpenAI, Stripe, or other provider calls after clean-consumer installation
-- local automated runtime observed between roughly 40 and 80 seconds; not onboarding time
+- local automated runtime observed between roughly 37 and 89 seconds; not onboarding time
 
 ## Trust and security boundaries
 
@@ -93,12 +93,9 @@ WriteGuard addresses transaction uncertainty rather than general orchestration: 
 
 ## Claims pending Iteration 6 evidence
 
-- Windows and Linux remote CI pass
-- fresh private-repository clone pass
 - two unaffiliated developer results and measured times
 - any under-ten-minute onboarding result
-- real Stripe test-mode conformance
-- final repository URL
+- fresh Iteration 6 Stripe test-mode conformance
 
 ## Claims not to make
 
@@ -110,7 +107,7 @@ Do not say production-safe, universal exactly once, real-provider validated whil
 - Category: Developer Tools
 - Technologies: TypeScript, Node.js, PostgreSQL, MCP, OpenAI Responses API, Zod, GitHub Actions
 - AI models: GPT-5.6 for optional design-time structured analysis
-- Source access: pending approved private repository and judge access
+- Source access: private repository configured; judge access pending owner action
 - License: none while private
 - Submission/session evidence: primary `/feedback` Codex Session ID pending owner retrieval
 
@@ -126,7 +123,7 @@ Do not show home-directory paths, environment variables, keys, provider referenc
 
 - approve repository owner/name/visibility and push scope;
 - grant private judge access;
-- confirm Windows/Linux CI and fresh clone;
+- preserve the verified Windows/Linux/PostgreSQL CI and fresh-clone evidence;
 - collect two external evaluations;
 - review P0/P1 resolution and supported claims;
 - provide private `/feedback` Session ID;

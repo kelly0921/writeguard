@@ -72,7 +72,7 @@ Do not use automated runtime to claim the under-ten-minute developer outcome.
 
 ## CI
 
-`.github/workflows/evaluation.yml` runs the same command on declared Ubuntu and Windows runners and preserves `.writeguard/evaluation-*` artifacts. Its structure is locally checked by `pnpm validate:evaluation-ci`. A local structural pass is not evidence that GitHub-hosted runners executed; remote CI status remains unverified until the workflow is pushed and completes.
+`.github/workflows/evaluation.yml` runs the same command on declared Ubuntu and Windows runners and preserves `.writeguard/evaluation-*` artifacts. Its structure is locally checked by `pnpm validate:evaluation-ci`. [Remote evaluation run 29592547066](https://github.com/kelly0921/writeguard/actions/runs/29592547066) passed on both platforms for commit `5a0b5956a995cd7020fb4df880ad5d68a58eced7`; [remote CI run 29592547198](https://github.com/kelly0921/writeguard/actions/runs/29592547198) passed the Ubuntu/PostgreSQL pilot gate for the same commit. This does not substitute for macOS, external-developer, or real-provider validation.
 
 ## Optional Stripe test-mode follow-up
 
