@@ -29,6 +29,14 @@ The resulting sanitized artifacts are written under `.writeguard/evaluation-*`. 
 
 Private-repository judges should use the exact access, environment, command, expected-output, and troubleshooting instructions in [docs/JUDGE_TESTING.md](docs/JUDGE_TESTING.md).
 
+## How Codex and GPT-5.6 were used
+
+Codex served as the implementation and validation collaborator during Build Week. It audited the pre-existing reliability architecture, extended the public analysis, approval, generation, verification, evaluation, and adapter-conformance contracts in bounded iterations, added tests and documentation, exercised packed clean consumers, diagnosed Windows/Linux CI failures, and preserved reproducible evidence. Codex did not replace developer approval, external evaluation, or real-provider validation.
+
+GPT-5.6 is used only by the optional design-time analyzer to inspect a normalized tool and propose recommendation-only policies for operation identity, reconciliation, verification, redaction, and failure testing. Trusted deterministic code validates the structured response and attaches provenance; a developer must review and explicitly approve the policy. GPT-5.6 is not part of generation, verification, adapter conformance, CI policy evaluation, or runtime enforcement.
+
+The credential-gated analyzer evaluation passed 9/9 sanitized fixtures. The canonical `pnpm evaluate:local` demo intentionally uses a validated recorded GPT-5.6-compatible fixture, makes no live model call, and labels that limitation in its receipt. This keeps the judge path reproducible and credential-free without presenting recorded evidence as a fresh live response.
+
 ## What the proof demonstrates
 
 ```text
