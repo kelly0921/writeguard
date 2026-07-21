@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">WriteGuard verification receipt</title>
+  <desc id="desc">A machine-readable verification receipt summary that separates passed simulated checks from real-provider semantics that were not run.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#050711"/><stop offset="1" stop-color="#11172B"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6EE7FF"/><stop offset="0.55" stop-color="#7D8BFF"/><stop offset="1" stop-color="#B56BFF"/></linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#8FA0C8" stroke-opacity="0.06"/></pattern>
+    <filter id="shadow"><feDropShadow dx="0" dy="18" stdDeviation="26" flood-opacity="0.38"/></filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#grid)"/>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="80" y="78" fill="#F7F9FF" font-size="48" font-weight="790" letter-spacing="-1.5">Verification that states its evidence boundary</text>
+    <text x="80" y="120" fill="#91A2C8" font-size="22">WriteGuard reports what passed, what did not run, and what the developer must validate next.</text>
+
+    <g transform="translate(70 165)" filter="url(#shadow)">
+      <rect width="930" height="665" rx="30" fill="#0B1120" stroke="#2A3958" stroke-width="2"/>
+      <rect x="28" y="26" width="874" height="62" rx="18" fill="#0F1729" stroke="#263653"/>
+      <circle cx="56" cy="57" r="7" fill="#63E6BE"/>
+      <text x="79" y="64" fill="#EEF4FF" font-size="20" font-weight="750">writeguard.verification.receipt</text>
+      <rect x="664" y="40" width="208" height="34" rx="17" fill="#18322E" stroke="#2A7068"/>
+      <text x="768" y="63" text-anchor="middle" fill="#AFF4DF" font-size="14" font-weight="780" letter-spacing="1">PASSED WITH LIMITATIONS</text>
+
+      <text x="34" y="132" fill="#7184AE" font-size="14" font-weight="760" letter-spacing="1.6">VERIFICATION LEVEL</text>
+      <text x="846" y="132" text-anchor="end" fill="#7184AE" font-size="14" font-weight="760" letter-spacing="1.6">STATUS</text>
+
+      <g transform="translate(28 154)">
+        <g><rect width="874" height="72" rx="16" fill="#0E1727"/><circle cx="31" cy="36" r="12" fill="#163A35" stroke="#2D8276"/><path d="M25 36L30 41L39 31" fill="none" stroke="#63E6BE" stroke-width="3" stroke-linecap="round"/><text x="58" y="32" fill="#F1F5FF" font-size="20" font-weight="700">Artifact integrity</text><text x="58" y="54" fill="#8294BA" font-size="15">Manifest, digests and provenance bindings</text><text x="818" y="43" text-anchor="end" fill="#83E8CF" font-size="16" font-weight="780">PASSED</text></g>
+        <g transform="translate(0 82)"><rect width="874" height="72" rx="16" fill="#0E1727"/><circle cx="31" cy="36" r="12" fill="#163A35" stroke="#2D8276"/><path d="M25 36L30 41L39 31" fill="none" stroke="#63E6BE" stroke-width="3" stroke-linecap="round"/><text x="58" y="32" fill="#F1F5FF" font-size="20" font-weight="700">Public compilation</text><text x="58" y="54" fill="#8294BA" font-size="15">Supported package surfaces · controlled TypeScript config</text><text x="818" y="43" text-anchor="end" fill="#83E8CF" font-size="16" font-weight="780">PASSED</text></g>
+        <g transform="translate(0 164)"><rect width="874" height="72" rx="16" fill="#0E1727"/><circle cx="31" cy="36" r="12" fill="#163A35" stroke="#2D8276"/><path d="M25 36L30 41L39 31" fill="none" stroke="#63E6BE" stroke-width="3" stroke-linecap="round"/><text x="58" y="32" fill="#F1F5FF" font-size="20" font-weight="700">Generated failure tests</text><text x="58" y="54" fill="#8294BA" font-size="15">Integrity-verified test execution · explicit opt-in</text><text x="818" y="43" text-anchor="end" fill="#83E8CF" font-size="16" font-weight="780">PASSED</text></g>
+        <g transform="translate(0 246)"><rect width="874" height="72" rx="16" fill="#0E1727"/><circle cx="31" cy="36" r="12" fill="#163A35" stroke="#2D8276"/><path d="M25 36L30 41L39 31" fill="none" stroke="#63E6BE" stroke-width="3" stroke-linecap="round"/><text x="58" y="32" fill="#F1F5FF" font-size="20" font-weight="700">Simulated adapter conformance</text><text x="58" y="54" fill="#8294BA" font-size="15">Six declared deterministic scenarios</text><text x="818" y="43" text-anchor="end" fill="#83E8CF" font-size="16" font-weight="780">PASSED</text></g>
+        <g transform="translate(0 328)"><rect width="874" height="72" rx="16" fill="#171724" stroke="#443A31"/><circle cx="31" cy="36" r="12" fill="#392D19" stroke="#90712F"/><path d="M25 36H37" stroke="#FFCA68" stroke-width="3" stroke-linecap="round"/><text x="58" y="32" fill="#F1F5FF" font-size="20" font-weight="700">Real-provider semantics</text><text x="58" y="54" fill="#9F9587" font-size="15">Requires a real adapter and provider-specific conformance run</text><text x="818" y="43" text-anchor="end" fill="#FFCA68" font-size="16" font-weight="780">NOT RUN</text></g>
+      </g>
+
+      <g transform="translate(28 585)">
+        <rect width="874" height="48" rx="14" fill="#0C1C27" stroke="#25475C"/>
+        <text x="20" y="30" fill="#75A8C8" font-size="14" font-weight="760" letter-spacing="1">MODE</text>
+        <text x="92" y="31" fill="#D6E5F5" font-size="16" font-family="ui-monospace, SFMono-Regular, Consolas, monospace">generated_tests</text>
+        <text x="590" y="30" fill="#75A8C8" font-size="14" font-weight="760" letter-spacing="1">NETWORK</text>
+        <text x="842" y="31" text-anchor="end" fill="#D6E5F5" font-size="16" font-family="ui-monospace, SFMono-Regular, Consolas, monospace">not required</text>
+      </g>
+    </g>
+
+    <g transform="translate(1040 165)" filter="url(#shadow)">
+      <rect width="490" height="665" rx="30" fill="#0D1221" stroke="#3C3750" stroke-width="2"/>
+      <rect x="28" y="28" width="52" height="52" rx="16" fill="#1A1A33" stroke="#5B4B83"/>
+      <path d="M54 42V58M54 68V70" stroke="#B8A6FF" stroke-width="5" stroke-linecap="round"/>
+      <text x="99" y="61" fill="#F5F2FF" font-size="25" font-weight="760">Declared limitations</text>
+      <text x="28" y="115" fill="#938CA9" font-size="17">A passing receipt is bounded evidence.</text>
+
+      <g transform="translate(28 150)">
+        <rect width="434" height="108" rx="18" fill="#131629" stroke="#373653"/>
+        <text x="22" y="33" fill="#AFA6C6" font-size="14" font-weight="760" letter-spacing="1.2">01 · PROVIDER</text>
+        <text x="22" y="66" fill="#F0ECFA" font-size="19" font-weight="680">Simulation does not establish</text>
+        <text x="22" y="91" fill="#F0ECFA" font-size="19" font-weight="680">real-provider behavior.</text>
+      </g>
+      <g transform="translate(28 274)">
+        <rect width="434" height="108" rx="18" fill="#131629" stroke="#373653"/>
+        <text x="22" y="33" fill="#AFA6C6" font-size="14" font-weight="760" letter-spacing="1.2">02 · EXECUTION</text>
+        <text x="22" y="66" fill="#F0ECFA" font-size="19" font-weight="680">The generated-test process</text>
+        <text x="22" y="91" fill="#F0ECFA" font-size="19" font-weight="680">is not a security sandbox.</text>
+      </g>
+      <g transform="translate(28 398)">
+        <rect width="434" height="108" rx="18" fill="#131629" stroke="#373653"/>
+        <text x="22" y="33" fill="#AFA6C6" font-size="14" font-weight="760" letter-spacing="1.2">03 · TRUST</text>
+        <text x="22" y="66" fill="#F0ECFA" font-size="19" font-weight="680">Digests prove integrity and</text>
+        <text x="22" y="91" fill="#F0ECFA" font-size="19" font-weight="680">binding—not authenticity.</text>
+      </g>
+
+      <g transform="translate(28 540)">
+        <rect width="434" height="88" rx="18" fill="#152129" stroke="url(#brand)" stroke-width="2"/>
+        <text x="22" y="32" fill="#86A7C1" font-size="14" font-weight="760" letter-spacing="1.2">NEXT STEP</text>
+        <text x="22" y="62" fill="#FFFFFF" font-size="20" font-weight="720">Run provider-specific conformance.</text>
+      </g>
+    </g>
+  </g>
+</svg>

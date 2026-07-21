@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">WriteGuard product journey and architecture</title>
+  <desc id="desc">A design-time workflow from tool analysis through approval and verification, feeding a deterministic runtime provider path.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#050711"/><stop offset="1" stop-color="#11172B"/></linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6EE7FF"/><stop offset="0.55" stop-color="#7E8BFF"/><stop offset="1" stop-color="#B66CFF"/></linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#8FA0C8" stroke-opacity="0.06"/></pattern>
+    <filter id="shadow"><feDropShadow dx="0" dy="16" stdDeviation="24" flood-opacity="0.35"/></filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#60729B"/></marker>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#grid)"/>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="80" y="75" fill="#F7F9FF" font-size="48" font-weight="790" letter-spacing="-1.5">From tool definition to verified integration</text>
+    <text x="80" y="116" fill="#91A2C8" font-size="22">GPT-5.6 recommends at design time. Developers approve. Runtime enforcement stays deterministic.</text>
+
+    <g transform="translate(70 160)" filter="url(#shadow)">
+      <rect width="1460" height="320" rx="30" fill="#0C1222" stroke="#293855" stroke-width="2"/>
+      <rect x="28" y="26" width="180" height="36" rx="18" fill="#171C37" stroke="#4A477B"/>
+      <circle cx="50" cy="44" r="6" fill="#A78BFA"/>
+      <text x="66" y="51" fill="#D8D1FF" font-size="15" font-weight="760" letter-spacing="1.5">DESIGN TIME</text>
+      <text x="230" y="51" fill="#7688AE" font-size="16">recommendation → human approval → deterministic artifacts</text>
+
+      <g transform="translate(28 96)">
+        <g><rect width="230" height="158" rx="22" fill="#11182A" stroke="#344463"/><text x="24" y="36" fill="#788BB4" font-size="14" font-weight="750" letter-spacing="1.4">01 · NORMALIZE</text><text x="24" y="79" fill="#F2F5FF" font-size="25" font-weight="740">Tool contract</text><text x="24" y="112" fill="#91A1C6" font-size="16">Schema, action, identity</text><text x="24" y="137" fill="#91A1C6" font-size="16">and sensitive fields</text></g>
+        <path d="M248 79H276" stroke="#60729B" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(292)"><rect width="230" height="158" rx="22" fill="#14172E" stroke="#574B83"/><text x="24" y="36" fill="#A798D7" font-size="14" font-weight="750" letter-spacing="1.4">02 · ANALYZE</text><text x="24" y="79" fill="#F2F5FF" font-size="25" font-weight="740">GPT-5.6</text><text x="24" y="112" fill="#A89FC4" font-size="16">Structured recommendation</text><text x="24" y="137" fill="#A89FC4" font-size="16">only · no approval</text></g>
+        <path d="M540 79H568" stroke="#60729B" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(584)"><rect width="230" height="158" rx="22" fill="#11182A" stroke="#344463"/><text x="24" y="36" fill="#788BB4" font-size="14" font-weight="750" letter-spacing="1.4">03 · APPROVE</text><text x="24" y="79" fill="#F2F5FF" font-size="25" font-weight="740">Developer</text><text x="24" y="112" fill="#91A1C6" font-size="16">Explicit identity and</text><text x="24" y="137" fill="#91A1C6" font-size="16">acknowledgements</text></g>
+        <path d="M832 79H860" stroke="#60729B" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(876)"><rect width="230" height="158" rx="22" fill="#11182A" stroke="#344463"/><text x="24" y="36" fill="#788BB4" font-size="14" font-weight="750" letter-spacing="1.4">04 · GENERATE</text><text x="24" y="79" fill="#F2F5FF" font-size="25" font-weight="740">Integration</text><text x="24" y="112" fill="#91A1C6" font-size="16">Typed wrapper, manifest</text><text x="24" y="137" fill="#91A1C6" font-size="16">and failure tests</text></g>
+        <path d="M1124 79H1152" stroke="#60729B" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(1168)"><rect width="236" height="158" rx="22" fill="#0F2027" stroke="#28646A"/><text x="24" y="36" fill="#7DCFC8" font-size="14" font-weight="750" letter-spacing="1.4">05 · VERIFY</text><text x="24" y="79" fill="#F2F5FF" font-size="25" font-weight="740">Receipt</text><text x="24" y="112" fill="#93B9B8" font-size="16">Integrity, compilation</text><text x="24" y="137" fill="#93B9B8" font-size="16">tests and limitations</text></g>
+      </g>
+    </g>
+
+    <path d="M800 480V526" stroke="url(#brand)" stroke-width="4" marker-end="url(#arrow)"/>
+
+    <g transform="translate(70 540)" filter="url(#shadow)">
+      <rect width="1460" height="290" rx="30" fill="#09131C" stroke="#234956" stroke-width="2"/>
+      <rect x="28" y="26" width="160" height="36" rx="18" fill="#102D2E" stroke="#286C68"/>
+      <circle cx="50" cy="44" r="6" fill="#63E6BE"/>
+      <text x="66" y="51" fill="#AFF4DF" font-size="15" font-weight="760" letter-spacing="1.5">RUNTIME</text>
+      <text x="208" y="51" fill="#789C9E" font-size="16">deterministic · auditable · no model or API key required</text>
+
+      <g transform="translate(60 105)">
+        <g><rect width="280" height="120" rx="22" fill="#0E1C28" stroke="#2E4A61"/><text x="140" y="47" text-anchor="middle" fill="#F2F5FF" font-size="24" font-weight="740">Generated wrapper</text><text x="140" y="79" text-anchor="middle" fill="#8FA5C3" font-size="16">Approved policy binding</text></g>
+        <path d="M300 60H360" stroke="#607E8E" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(380)"><rect width="280" height="120" rx="22" fill="#132237" stroke="url(#brand)" stroke-width="2"/><text x="140" y="47" text-anchor="middle" fill="#F8FAFF" font-size="24" font-weight="780">WriteGuard runtime</text><text x="140" y="79" text-anchor="middle" fill="#A4B5D3" font-size="16">Claim · persist · reconcile</text></g>
+        <path d="M680 60H740" stroke="#607E8E" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(760)"><rect width="280" height="120" rx="22" fill="#0E1C28" stroke="#2E4A61"/><text x="140" y="47" text-anchor="middle" fill="#F2F5FF" font-size="24" font-weight="740">Provider adapter</text><text x="140" y="79" text-anchor="middle" fill="#8FA5C3" font-size="16">Action-specific hooks</text></g>
+        <path d="M1060 60H1120" stroke="#607E8E" stroke-width="3" marker-end="url(#arrow)"/>
+        <g transform="translate(1140)"><rect width="200" height="120" rx="22" fill="#0D292B" stroke="#27706D"/><text x="100" y="47" text-anchor="middle" fill="#F2F5FF" font-size="24" font-weight="740">Provider</text><text x="100" y="79" text-anchor="middle" fill="#91B7B5" font-size="16">External effect</text></g>
+      </g>
+    </g>
+  </g>
+</svg>

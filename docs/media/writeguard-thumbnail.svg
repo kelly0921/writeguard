@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">WriteGuard project thumbnail</title>
+  <desc id="desc">Execution safety for consequential AI actions, showing an agent routed through WriteGuard to a provider.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050711"/>
+      <stop offset="0.55" stop-color="#0A1020"/>
+      <stop offset="1" stop-color="#10162A"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6EE7FF"/>
+      <stop offset="0.52" stop-color="#7C8CFF"/>
+      <stop offset="1" stop-color="#B76CFF"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#12182B" stop-opacity="0.98"/>
+      <stop offset="1" stop-color="#0B1020" stop-opacity="0.98"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#8392C8" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="22" stdDeviation="30" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1500" height="1000" fill="url(#bg)"/>
+  <rect width="1500" height="1000" fill="url(#grid)"/>
+  <circle cx="1210" cy="150" r="300" fill="#6547FF" opacity="0.10" filter="url(#glow)"/>
+  <circle cx="300" cy="920" r="260" fill="#27D9E8" opacity="0.07" filter="url(#glow)"/>
+
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <g transform="translate(92 92)">
+      <rect x="0" y="0" width="282" height="42" rx="21" fill="#101A31" stroke="#314262"/>
+      <circle cx="24" cy="21" r="6" fill="#63E6BE"/>
+      <text x="43" y="28" fill="#BAC7E8" font-size="17" font-weight="700" letter-spacing="2">AI DEVELOPER TOOL</text>
+
+      <text x="0" y="174" fill="#F8FAFF" font-size="112" font-weight="780" letter-spacing="-5">WriteGuard</text>
+      <rect x="0" y="203" width="154" height="8" rx="4" fill="url(#brand)"/>
+      <text x="0" y="276" fill="#DCE5FA" font-size="38" font-weight="600">Execution safety for</text>
+      <text x="0" y="324" fill="#DCE5FA" font-size="38" font-weight="600">consequential AI actions.</text>
+      <text x="0" y="389" fill="#8EA0C9" font-size="22">Stable identity · explicit approval · deterministic verification</text>
+
+      <g transform="translate(0 620)">
+        <rect width="610" height="154" rx="24" fill="#0C1325" stroke="#263655"/>
+        <text x="28" y="38" fill="#8192B8" font-size="16" font-weight="700" letter-spacing="1.8">DEMONSTRATED SIMULATION</text>
+        <g transform="translate(28 59)">
+          <rect width="250" height="65" rx="16" fill="#28141B" stroke="#7F3542"/>
+          <circle cx="27" cy="32.5" r="9" fill="#FF6B78"/>
+          <text x="48" y="27" fill="#FFB1B8" font-size="16" font-weight="650">Unsafe retry</text>
+          <text x="48" y="49" fill="#FFFFFF" font-size="20" font-weight="760">2 effects</text>
+        </g>
+        <path d="M298 91H330" stroke="#617194" stroke-width="3" stroke-linecap="round"/>
+        <path d="M324 84L332 91L324 98" fill="none" stroke="#617194" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <g transform="translate(350 59)">
+          <rect width="232" height="65" rx="16" fill="#0E282A" stroke="#27777B"/>
+          <circle cx="27" cy="32.5" r="9" fill="#63E6BE"/>
+          <text x="48" y="27" fill="#A9F4DE" font-size="16" font-weight="650">Guarded</text>
+          <text x="48" y="49" fill="#FFFFFF" font-size="20" font-weight="760">1 effect</text>
+        </g>
+      </g>
+    </g>
+
+    <g transform="translate(760 142)" filter="url(#shadow)">
+      <rect width="650" height="700" rx="40" fill="url(#card)" stroke="#2A3858" stroke-width="2"/>
+      <rect x="30" y="30" width="590" height="46" rx="14" fill="#0B1122" stroke="#263553"/>
+      <circle cx="57" cy="53" r="6" fill="#FF6B78"/>
+      <circle cx="79" cy="53" r="6" fill="#FFCA68"/>
+      <circle cx="101" cy="53" r="6" fill="#63E6BE"/>
+      <text x="325" y="60" text-anchor="middle" fill="#8D9CC0" font-size="15" font-family="ui-monospace, SFMono-Regular, Consolas, monospace">consequential_action.ts</text>
+
+      <text x="48" y="126" fill="#7183AD" font-size="15" font-weight="700" letter-spacing="2">ACTION PIPELINE</text>
+
+      <g transform="translate(57 175)">
+        <circle cx="72" cy="74" r="72" fill="#131E35" stroke="#3B4D73" stroke-width="2"/>
+        <circle cx="72" cy="58" r="20" fill="none" stroke="#AFC0E8" stroke-width="6"/>
+        <path d="M35 107C42 82 102 82 109 107" fill="none" stroke="#AFC0E8" stroke-width="6" stroke-linecap="round"/>
+        <text x="72" y="174" text-anchor="middle" fill="#DDE6FA" font-size="19" font-weight="720">AI agent</text>
+      </g>
+
+      <path d="M210 249H265" stroke="#56698F" stroke-width="4" stroke-linecap="round"/>
+      <path d="M254 238L267 249L254 260" fill="none" stroke="#56698F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <g transform="translate(260 157)">
+        <circle cx="72" cy="92" r="92" fill="#151D3A" stroke="url(#brand)" stroke-width="3" filter="url(#glow)"/>
+        <path d="M72 39L119 57V88C119 121 101 145 72 158C43 145 25 121 25 88V57L72 39Z" fill="#0B1226" stroke="url(#brand)" stroke-width="5"/>
+        <path d="M50 96L66 112L97 77" fill="none" stroke="#70E5D0" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="72" y="220" text-anchor="middle" fill="#F5F7FF" font-size="20" font-weight="780">WriteGuard</text>
+        <text x="72" y="246" text-anchor="middle" fill="#8EA0C9" font-size="15">identity · policy · receipt</text>
+      </g>
+
+      <path d="M425 249H480" stroke="#56698F" stroke-width="4" stroke-linecap="round"/>
+      <path d="M469 238L482 249L469 260" fill="none" stroke="#56698F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+      <g transform="translate(475 175)">
+        <circle cx="72" cy="74" r="72" fill="#131E35" stroke="#3B4D73" stroke-width="2"/>
+        <rect x="35" y="43" width="74" height="62" rx="11" fill="none" stroke="#AFC0E8" stroke-width="5"/>
+        <path d="M48 61H96M48 75H88M48 89H78" stroke="#AFC0E8" stroke-width="5" stroke-linecap="round"/>
+        <text x="72" y="174" text-anchor="middle" fill="#DDE6FA" font-size="19" font-weight="720">Provider</text>
+      </g>
+
+      <g transform="translate(46 490)">
+        <rect width="558" height="164" rx="24" fill="#0A1424" stroke="#234D59"/>
+        <rect x="22" y="22" width="110" height="32" rx="16" fill="#123232" stroke="#286F69"/>
+        <circle cx="42" cy="38" r="5" fill="#63E6BE"/>
+        <text x="57" y="44" fill="#A9F4DE" font-size="14" font-weight="740">VERIFIED</text>
+        <text x="22" y="91" fill="#F1F5FF" font-size="25" font-weight="740">Passed with limitations</text>
+        <text x="22" y="126" fill="#8FA0C5" font-size="17">Real-provider semantics remain</text>
+        <text x="318" y="126" fill="#FFCA68" font-size="17" font-weight="760">not run</text>
+      </g>
+    </g>
+  </g>
+</svg>
