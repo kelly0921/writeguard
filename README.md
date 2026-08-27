@@ -10,7 +10,7 @@ The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard
 
 ## Public beta and distribution
 
-The repository is being prepared as an Apache-2.0 public beta. The source, CLI, SDK facade, analyzer boundary, deterministic generator/verifier, conformance kit, examples, and evidence contracts are intended to be inspectable and reusable. Public source does not make the project production-certified or turn simulated evidence into real-provider proof.
+This repository is an Apache-2.0 public beta. The source, CLI, SDK facade, analyzer boundary, deterministic generator/verifier, conformance kit, examples, and evidence contracts are intended to be inspectable and reusable. Public source does not make the project production-certified or turn simulated evidence into real-provider proof.
 
 The supported product shape is:
 

@@ -178,6 +178,6 @@ The corrected repository suite contains 172 deterministic unit tests plus 20 int
 - Digests establish integrity and binding but not authenticity or trust in the original tool, analysis, or review.
 - Generated simulations prove supported WriteGuard integration behavior only; real provider reconciliation, consistency, verification, and production storage require developer implementation and validation.
 - No external developer has yet measured the under-ten-minute journey.
-- Apache License 2.0 was selected for the post-hackathon public-beta preparation on August 27, 2026. Public visibility and registry publication remain separate release decisions.
+- Apache License 2.0 was selected and the repository became public for post-hackathon beta evaluation on August 27, 2026. Registry publication remains a separate release decision.
 - Local Build Week history begins at the Iteration 1 checkpoint. Owner-approved commits and annotated Iteration 1-5 tags exist only in the private repository; no package has been published or deployed.
 - Existing execution guarantees still depend on correct application identity, reconciliation, verification, and durable storage.

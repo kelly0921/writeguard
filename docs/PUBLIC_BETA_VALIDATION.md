@@ -1,7 +1,7 @@
 # Public Beta Validation
 
 Date: August 27, 2026
-Status: **code and documentation ready; GitHub visibility change pending authenticated owner action**
+Status: **public at `0be745a88fabeba438b9bbceae68c4ba95711956`; local and remote release gates passed**
 
 ## Customer-facing outcome
 
@@ -58,13 +58,22 @@ The first OneDrive-hosted unit run received a transient Windows `EPERM` during t
 
 The existing local pilot gate assumes PostgreSQL is already running before its later sandbox-start step. For this run, the declared Compose service was started and checked for health before the gate, and both the manually started service and the gate-owned sandbox were stopped afterward. This ordering should be simplified in a follow-up maintenance change.
 
-## Remaining release gates
+## Remote and anonymous verification
 
-1. Authenticate an owner-controlled GitHub session.
-2. Review and commit this exact release diff.
-3. Push the commit and wait for the Windows/Ubuntu evaluation and Ubuntu/PostgreSQL workflows.
-4. Re-run the reachable-history scan against the remote branch.
-5. Change repository visibility only after those remote checks pass.
-6. Verify issue forms, private vulnerability reporting, license detection, and clone instructions from an unauthenticated browser.
+- Preparation commit: `0be745a88fabeba438b9bbceae68c4ba95711956`
+- Windows/Ubuntu evaluation workflow: passed, run `33117520339`
+- Ubuntu/PostgreSQL pilot workflow: passed, run `33117520407`
+- Anonymous repository API: reported `public`
+- Anonymous `git ls-remote`: resolved `master` to the preparation commit
+- Anonymous raw README request: HTTP 200
+- GitHub license detection: `Apache-2.0`
+- Repository issues and private vulnerability reporting: enabled
+
+## Next distribution gates
+
+1. Complete two unassisted external-developer evaluations.
+2. Verify ownership of the intended npm namespace and choose final package names once.
+3. Run one real provider test-mode conformance integration with a freshly supplied credential.
+4. Publish packages only after the renamed packed-consumer gate and explicit owner approval.
 
 No package was published and no provider or model credential was used during this preparation.
