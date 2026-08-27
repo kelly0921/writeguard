@@ -4,7 +4,7 @@ Thank you for testing WriteGuard. Please use a disposable clone and do not add r
 
 ## Access and requirements
 
-- Read access to the private repository: `https://github.com/kelly0921/writeguard`
+- Public repository access: `https://github.com/kelly0921/writeguard`
 - Git
 - Node.js 20 or newer
 - pnpm 11.9.0

@@ -23,6 +23,21 @@ The first `pnpm audit --prod` found one high-severity advisory against `drizzle-
 
 The workspace constraint was narrowly updated from `^0.44.0` to `^0.45.2`, resolving to 0.45.2. No state-machine, SQL migration, public API, or package-runtime dependency changed. The follow-up `pnpm audit --prod` reported `No known vulnerabilities found`. This is a time-bound advisory-database result, not a security certification. The complete readiness suite must remain green before the dependency exception is accepted.
 
+## August 27, 2026 MCP dependency remediation
+
+A current `pnpm audit --prod --json` confirmed the previously documented Windows path-traversal advisory in `@hono/node-server@1.19.14` (`GHSA-frvp-7c67-39w9`) and newly disclosed advisories in the same MCP dependency paths through `hono@4.12.30`, `fast-uri@3.1.3`, and `ip-address@10.2.0`.
+
+The lockfile was narrowly advanced to patched versions already permitted by `@modelcontextprotocol/sdk@1.29.0`:
+
+- `@hono/node-server@1.19.15`
+- `hono@4.12.34`
+- `fast-uri@3.1.5`
+- `ip-address@10.3.1`
+
+No WriteGuard source code, public contract, direct dependency range, runtime state-machine behavior, or provider semantic claim changed. A follow-up audit reported no remaining advisory path through either `apps/agent-demo` or `apps/design-partner-starter`.
+
+The remediation was independently applied to a clean WriteGuard checkout. `pnpm install --frozen-lockfile --ignore-scripts` passed, all three public packages built, all 172 unit tests passed, an isolated MCP client/server round-trip passed with the patched dependency graph, and `pnpm evaluate:local` passed in 42.7 seconds. The full PostgreSQL pilot-readiness gate was not rerun in that maintenance pass.
+
 ## License policy
 
 Review every SBOM component before distribution. Escalate missing/unknown licenses, copyleft obligations, non-standard terms, or a package whose published license differs from its repository. Keep notices required by dependencies. Do not infer legal approval from an SPDX string; obtain counsel for uncertainty.

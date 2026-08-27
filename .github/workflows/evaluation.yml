@@ -10,6 +10,19 @@ permissions:
   contents: read
 
 jobs:
+  repository-history:
+    name: Repository history safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node scripts/scan-git-history-secrets.mjs
+
   local-evaluation:
     name: Local evaluation (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

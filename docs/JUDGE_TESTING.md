@@ -1,15 +1,10 @@
-# Judge testing instructions
+# Evaluation testing instructions
 
-These instructions target the owner-approved private evaluation repository at `https://github.com/kelly0921/writeguard`.
+These instructions target the public beta repository at `https://github.com/kelly0921/writeguard`.
 
 ## Access
 
-Private-repository testing access must be granted manually to:
-
-- `testing@devpost.com`
-- `build-week-event@openai.com`
-
-Do not add either account without owner approval.
+Cloning the public repository requires no invitation or established GitHub account. Creating issues or pull requests requires a GitHub account and remains optional for evaluators.
 
 ## Requirements
 

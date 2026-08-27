@@ -48,12 +48,13 @@ These become credible only if multiple teams need shared operation identity and 
 
 ## Recommended next build
 
-Iteration 6 should be external evaluation and one provider-specific test-mode conformance run, not a broader platform:
+Iteration 7 is **Independent Real-Provider Adoption**, not a broader platform:
 
-1. Resolve the owner-controlled license decision.
-2. Push only after review and obtain actual Ubuntu/Windows CI evidence.
-3. Observe at least one unassisted external developer using `pnpm evaluate:local`; record confusion, trust, limitations comprehension, and honestly classified time.
-4. Use a freshly rotated test credential to apply the public six-scenario conformance receipt to one real provider adapter where the provider supports each scenario.
-5. Refine docs/contracts only from that evidence; do not add a dashboard, hosted control plane, adapter catalog, or production claim.
+1. Complete the Apache-2.0 public-beta release audit and expose the clean WriteGuard-only repository.
+2. Keep the SDK and CLI as the product; use the optional agent skill only to guide integration.
+3. Observe two unassisted external developers using `pnpm evaluate:local`; record confusion, trust, limitations comprehension, and honestly classified time.
+4. Have at least one developer protect a real provider test-mode action with its own stable business identity, reconciliation, verification, and rollback ownership.
+5. Apply the public six-scenario conformance receipt only where the provider supports each scenario and preserve unsupported results explicitly.
+6. Fix the repeated integration friction found in that evidence before adding packages, adapters, or UI.
 
-The key validation remains whether a developer can supply reliable identity, reconciliation, and verification with materially less bespoke failure-handling code.
+The key validation remains whether an independent developer can supply reliable identity, reconciliation, and verification with materially less bespoke failure-handling code. Success is one understandable, receipt-backed test-mode integration—not package-download counts or a faster maintainer demo.

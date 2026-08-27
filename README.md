@@ -1,4 +1,4 @@
-# Closure / WriteGuard
+# WriteGuard
 
 WriteGuard is a small TypeScript execution guard for consequential external writes. It proves one narrow thesis: when an external action succeeds but the caller loses the acknowledgement, a retry should reconcile the uncertain result before it considers executing the action again.
 
@@ -7,6 +7,23 @@ It is intended for agent-tool, backend, platform, reliability, and payments deve
 This repository is an evaluation release candidate, not a production payment system or a general agent framework. **Sandbox and external evaluation only; not production-certified.** Real external-developer results recorded so far: zero.
 
 The current unreleased line is `@closure/writeguard@0.8.0`, `@closure/writeguard-analyzer-openai@0.1.1`, and `@closure/writeguard-generator@0.3.1`. Iteration 5 turned the existing journey into one evidence-producing evaluation without adding a model to runtime enforcement; Iteration 6 validates that release candidate remotely and with fresh private clones. See [BUILD_WEEK.md](BUILD_WEEK.md).
+
+## Public beta and distribution
+
+The repository is being prepared as an Apache-2.0 public beta. The source, CLI, SDK facade, analyzer boundary, deterministic generator/verifier, conformance kit, examples, and evidence contracts are intended to be inspectable and reusable. Public source does not make the project production-certified or turn simulated evidence into real-provider proof.
+
+The supported product shape is:
+
+- the TypeScript SDK as the runtime enforcement layer;
+- the CLI as the primary analysis, approval, generation, verification, and CI interface;
+- public provider contracts and conformance tests as the extension boundary; and
+- the optional [`protect-agent-actions` skill](skills/protect-agent-actions/SKILL.md) as an integration guide for Codex and compatible agents.
+
+The skill is not an enforcement mechanism. It may guide the CLI workflow, but it cannot approve policy, invent provider reconciliation, or replace durable runtime state. A hosted UI, control plane, and remote MCP service remain deferred until external adoption establishes a need.
+
+The current `@closure/*` package names remain unreleased compatibility identifiers. No npm availability is claimed. Namespace ownership and the final public package names must be verified before the first registry publication; see [the distribution strategy](docs/DISTRIBUTION.md).
+
+The latest public-beta preparation evidence is recorded in [the public-beta validation report](docs/PUBLIC_BETA_VALIDATION.md).
 
 ## Evaluate locally
 
@@ -27,7 +44,7 @@ The analysis step uses a runtime-validated, deterministic recorded GPT-5.6-compa
 
 The resulting sanitized artifacts are written under `.writeguard/evaluation-*`. The summary clearly labels the provider as simulated and real-provider semantics as `not_run`. It does not prove production behavior, provider correctness, or the under-ten-minute external-developer outcome. See [the evaluation runbook](docs/EVALUATION_RUNBOOK.md).
 
-Private-repository judges should use the exact access, environment, command, expected-output, and troubleshooting instructions in [docs/JUDGE_TESTING.md](docs/JUDGE_TESTING.md).
+Evaluators can use the exact environment, command, expected-output, and troubleshooting instructions in [docs/JUDGE_TESTING.md](docs/JUDGE_TESTING.md).
 
 ## How Codex and GPT-5.6 were used
 

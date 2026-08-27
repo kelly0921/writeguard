@@ -1,0 +1,39 @@
+name: Feature request
+description: Propose a focused improvement grounded in an integration problem
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Integration problem
+      description: Describe the consequential action and failure mode. Avoid confidential provider or customer details.
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current workaround
+      description: How is identity, retry, reconciliation, verification, or review handled today?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: State the smallest useful result without assuming a particular UI or platform architecture.
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence
+    attributes:
+      label: Evidence environment
+      options:
+        - Deterministic simulation
+        - Provider test mode
+        - Non-production internal workflow
+        - Production observation
+        - Not yet tested
+    validations:
+      required: true

@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, rename, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, isAbsolute, join, normalize, parse, resolve, sep } from "node:path";
+import { setTimeout as delay } from "node:timers/promises";
 import type { GeneratedProject } from "./generate.js";
 import { WriteGuardGeneratorError } from "./errors.js";
 
@@ -57,6 +58,44 @@ async function assertNoSymlinkAncestor(path: string): Promise<void> {
   }
 }
 
+type RenameRetryOptions = {
+  platform?: NodeJS.Platform;
+  renameOperation?: typeof rename;
+  wait?: (milliseconds: number) => Promise<unknown>;
+  targetState?: typeof pathState;
+};
+
+const transientWindowsRenameCodes = new Set(["EACCES", "EBUSY", "EPERM"]);
+const transientWindowsRenameDelays = [10, 25, 50, 100] as const;
+
+export async function renameWithTransientRetry(
+  stage: string,
+  target: string,
+  options: RenameRetryOptions = {}
+): Promise<void> {
+  const platform = options.platform ?? process.platform;
+  const renameOperation = options.renameOperation ?? rename;
+  const wait = options.wait ?? delay;
+  const targetState = options.targetState ?? pathState;
+
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      await renameOperation(stage, target);
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code ?? "";
+      const retryDelay = transientWindowsRenameDelays[attempt];
+      if (platform !== "win32" || !transientWindowsRenameCodes.has(code) || retryDelay === undefined) {
+        throw error;
+      }
+      if (await targetState(target) !== "missing") {
+        throw new WriteGuardGeneratorError(`Output path ${target} appeared during staged generation.`);
+      }
+      await wait(retryDelay);
+    }
+  }
+}
+
 class NodeGeneratedProjectPublisher implements GeneratedProjectPublisher {
   async publish(project: GeneratedProject, outDir: string): Promise<PublishedGeneratedProject> {
     const target = resolve(outDir);
@@ -99,7 +138,7 @@ class NodeGeneratedProjectPublisher implements GeneratedProjectPublisher {
       if (await pathState(target) !== "missing") {
         throw new WriteGuardGeneratorError(`Output path ${target} appeared during staged generation.`);
       }
-      await rename(stage, target);
+      await renameWithTransientRetry(stage, target);
     } catch (error) {
       await rm(stage, { recursive: true, force: true });
       if (error instanceof WriteGuardGeneratorError) throw error;

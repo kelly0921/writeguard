@@ -2,13 +2,13 @@
 
 Status: ready-to-send instructions for two unaffiliated developers. Do not invent participants or results.
 
-## Access prerequisite
+## Repository
 
-You need read access to the private repository:
+Use the public repository:
 
 `https://github.com/kelly0921/writeguard`
 
-Use a disposable clone. Do not add API keys, provider credentials, customer data, or a `.env` file.
+No GitHub invitation or established GitHub account is required for a public clone. Use a disposable clone. Do not add API keys, provider credentials, customer data, or a `.env` file.
 
 ## Environment
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Protect Agent Actions"
+  short_description: "Add WriteGuard to consequential agent tools"
+  default_prompt: "Use $protect-agent-actions to protect a consequential agent tool with WriteGuard."

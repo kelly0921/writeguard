@@ -2,6 +2,24 @@
   "name": "@closure/writeguard",
   "version": "0.8.0",
   "description": "Durable execution control, explicit uncertainty, reconciliation, and receipts for agent-triggered external writes.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelly0921/writeguard.git",
+    "directory": "packages/writeguard"
+  },
+  "bugs": {
+    "url": "https://github.com/kelly0921/writeguard/issues"
+  },
+  "homepage": "https://github.com/kelly0921/writeguard#readme",
+  "keywords": [
+    "agents",
+    "idempotency",
+    "mcp",
+    "reconciliation",
+    "reliability",
+    "typescript"
+  ],
   "type": "module",
   "main": "./dist/writeguard/src/index.js",
   "types": "./dist/writeguard/src/index.d.ts",

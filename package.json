@@ -2,6 +2,15 @@
   "name": "closure-writeguard",
   "version": "0.1.0",
   "private": true,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelly0921/writeguard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kelly0921/writeguard/issues"
+  },
+  "homepage": "https://github.com/kelly0921/writeguard#readme",
   "type": "module",
   "packageManager": "pnpm@11.9.0",
   "engines": {
@@ -38,6 +47,7 @@
     "writeguard:doctor": "tsx apps/pilot-sandbox/src/cli.ts doctor",
     "writeguard": "tsx packages/writeguard/src/cli.ts",
     "security:scan": "node scripts/scan-secrets.mjs",
+    "security:scan-history": "node scripts/scan-git-history-secrets.mjs",
     "security:audit": "pnpm audit --prod",
     "security:sbom": "node scripts/generate-sbom.mjs",
     "pilot:start": "node scripts/pilot-control.mjs start",

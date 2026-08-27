@@ -21,6 +21,7 @@ import {
   createApprovedGenerationFixture,
   createGenerationRiskAnalysis
 } from "./generation-fixtures.js";
+import { renameWithTransientRetry } from "../packages/generator/src/publish.js";
 
 const temporaryRoots: string[] = [];
 
@@ -41,6 +42,34 @@ function artifactContent(project: ReturnType<typeof generateGuardedToolProject>,
 }
 
 describe("deterministic WriteGuard generator", () => {
+  it("retries only bounded transient Windows publication failures", async () => {
+    const attempts: string[] = [];
+    const waits: number[] = [];
+    await renameWithTransientRetry("stage", "target", {
+      platform: "win32",
+      renameOperation: async (stage, target) => {
+        attempts.push(`${stage}:${target}`);
+        if (attempts.length < 3) {
+          throw Object.assign(new Error("transient filesystem lock"), { code: "EPERM" });
+        }
+      },
+      targetState: async () => "missing",
+      wait: async (milliseconds) => { waits.push(milliseconds); }
+    });
+
+    expect(attempts).toHaveLength(3);
+    expect(waits).toEqual([10, 25]);
+
+    await expect(renameWithTransientRetry("stage", "target", {
+      platform: "linux",
+      renameOperation: async () => {
+        throw Object.assign(new Error("permission denied"), { code: "EACCES" });
+      },
+      targetState: async () => "missing",
+      wait: async () => { throw new Error("must not wait"); }
+    })).rejects.toMatchObject({ code: "EACCES" });
+  });
+
   it.each([
     ["refund", refundTool, "RefundOrder"],
     ["email", emailTool, "SendCustomerEmail"]

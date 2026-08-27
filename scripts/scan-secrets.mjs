@@ -2,11 +2,22 @@ import { readdir, readFile } from "node:fs/promises";
 import { extname, join, relative } from "node:path";
 
 const root = process.cwd();
-const ignoredDirectories = new Set([".git", ".pnpm-store", "node_modules", "dist", "coverage", ".docker-config"]);
+const ignoredDirectories = new Set([
+  ".docker-config",
+  ".git",
+  ".pnpm-store",
+  ".tmp",
+  ".writeguard",
+  "coverage",
+  "dist",
+  "node_modules"
+]);
 const includedExtensions = new Set([".ts", ".js", ".mjs", ".json", ".md", ".yaml", ".yml", ".example"]);
 const secretPatterns = [
   { name: "Stripe secret key", expression: /sk_(?:test|live)_[A-Za-z0-9]{12,}/g },
-  { name: "OpenAI API key", expression: /sk-proj-[A-Za-z0-9_-]{12,}/g }
+  { name: "OpenAI API key", expression: /sk-proj-[A-Za-z0-9_-]{12,}/g },
+  { name: "GitHub token", expression: /gh[pousr]_[A-Za-z0-9]{20,}/g },
+  { name: "AWS access key", expression: /AKIA[0-9A-Z]{16}/g }
 ];
 const findings = [];
 

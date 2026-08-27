@@ -10,11 +10,11 @@ Never include credentials, raw provider payloads, payment-instrument details, cu
 
 ## Evaluation scope
 
-The `@closure/writeguard` 0.3.x pilot baseline, unreleased 0.4.x–0.7.x Build Week lines, unreleased `@closure/writeguard-analyzer-openai` 0.1.x package, and unreleased `@closure/writeguard-generator` 0.1.x–0.2.x package are currently in scope. There is no security SLA or production-support commitment. Maintainers will acknowledge valid private reports on a best-effort basis and coordinate disclosure only after a mitigation exists.
+The `@closure/writeguard` 0.3.x pilot baseline and unreleased 0.4.x–0.8.x lines, unreleased `@closure/writeguard-analyzer-openai` 0.1.x package, and unreleased `@closure/writeguard-generator` 0.1.x–0.3.x package are currently in scope. There is no security SLA or production-support commitment. Maintainers will acknowledge valid private reports on a best-effort basis and coordinate disclosure only after a mitigation exists.
 
 ## Dependency and release hygiene
 
-Before a pilot release, run `pnpm security:scan`, `pnpm audit --prod`, `pnpm security:sbom`, `pnpm package:inspect`, and `pnpm validate:pilot-ready`. Review lockfile changes, licenses, and transitive dependency changes. Apply dependency updates one at a time when practical, then re-run the complete readiness gate. Never weaken live-key rejection, reconciliation, fail-closed storage behavior, or export redaction to accommodate an update.
+Before a public or pilot release, run `pnpm security:scan`, `pnpm security:scan-history`, `pnpm audit --prod`, `pnpm security:sbom`, `pnpm package:inspect`, and `pnpm validate:pilot-ready`. The history scan covers reachable commits and reports only credential type, location, and a non-reversible fingerprint; it does not print a matched value. Review lockfile changes, licenses, and transitive dependency changes. Apply dependency updates one at a time when practical, then re-run the complete readiness gate. Never weaken live-key rejection, reconciliation, fail-closed storage behavior, or export redaction to accommodate an update.
 
 The GPT-5.6 analyzer is design-time only. Never embed OpenAI keys or runtime/customer values in a tool definition. The full normalized definition is sent to OpenAI, so examples/defaults must be synthetic and metadata must be reviewed for personal or confidential data. The normalizer's credential-shape rejection and sensitive-field hints are defense-in-depth heuristics, not complete secret scanning or data-loss prevention. Analyzer errors and evaluation reports must not store raw prompts, responses, keys, or full sensitive inputs.
 

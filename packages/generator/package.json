@@ -2,6 +2,24 @@
   "name": "@closure/writeguard-generator",
   "version": "0.3.1",
   "description": "Deterministic WriteGuard generation plus integrity, compilation, and opt-in failure-test verification.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelly0921/writeguard.git",
+    "directory": "packages/generator"
+  },
+  "bugs": {
+    "url": "https://github.com/kelly0921/writeguard/issues"
+  },
+  "homepage": "https://github.com/kelly0921/writeguard#readme",
+  "keywords": [
+    "agents",
+    "code-generation",
+    "mcp",
+    "reliability",
+    "typescript",
+    "verification"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
